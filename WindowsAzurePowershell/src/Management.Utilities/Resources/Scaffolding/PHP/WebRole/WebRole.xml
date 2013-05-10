@@ -27,7 +27,7 @@
                 Not all php versions are available in the cloud
                 <Variable name="RUNTIMEVERSIONPRIMARYKEY" value="" />
           -->
-          <Variable name="RUNTIMEVERSIONPRIMARYKEY" value="5.3.17" />
+          <Variable name="RUNTIMEVERSIONPRIMARYKEY" value="" />
           <Variable name="RUNTIMEID" value="PHP" />
           <Variable name="RUNTIMEURL" value=""/>
         </Environment>

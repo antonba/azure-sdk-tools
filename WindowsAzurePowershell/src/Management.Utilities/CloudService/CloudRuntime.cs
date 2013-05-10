@@ -302,11 +302,11 @@ namespace Microsoft.WindowsAzure.Management.Utilities.CloudService
 
         public static void ClearRuntime(WorkerRole role)
         {
-             Task startupTask = GetRuntimeStartupTask(role.Startup);
-             if (startupTask != null)
-             {
-                 ClearEnvironmentValue(startupTask.Environment, Resources.RuntimeUrlKey);
-             }
+            Task startupTask = GetRuntimeStartupTask(role.Startup);
+            if (startupTask != null)
+            {
+                ClearEnvironmentValue(startupTask.Environment, Resources.RuntimeUrlKey);
+            }
         }
 
         static void ClearEnvironmentValue(Variable[] environment, string key)
@@ -502,10 +502,82 @@ namespace Microsoft.WindowsAzure.Management.Utilities.CloudService
 
                 if (string.IsNullOrEmpty(this.Version))
                 {
-                    string version = Resources.PHPDefaultRuntimeVersion;
+                    //string version = Resources.PHPDefaultRuntimeVersion;
+                    string version = GetInstalledRuntimeVersion();
                     environment.TryGetValue(Resources.RuntimeVersionPrimaryKey, out version);
                     this.Version = version;
                 }
+            }
+
+            public string GetInstalledRuntimeVersion()
+            {
+                //1st look for PHP in the path
+                string phpFile = "php.exe";
+                string phpPath = "";
+
+                var pathArr = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
+                foreach (var path in pathArr.Split(';'))
+                {
+                    string mPath = path;
+                    if (mPath != "")
+                    {
+                        if (mPath[mPath.Length - 1] != '\\')
+                            mPath += '\\';
+
+                        var fullPath = Path.Combine(mPath, phpFile);
+                        if (File.Exists(fullPath))
+                            phpPath = fullPath;
+                    }
+                }
+
+                //2nd if not in the path, probe common locations
+                string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                if (Directory.Exists(ProgramFiles + " (x86)"))
+                    ProgramFiles = ProgramFiles + " (x86)";
+
+                if (phpPath == "")
+                {
+                    string thisPath = Path.Combine(ProgramFiles, "PHP", "v5.3", phpFile);
+                    if (File.Exists(thisPath))
+                        phpPath = thisPath;
+                }
+
+                if (phpPath == "")
+                {
+                    string thisPath = Path.Combine(ProgramFiles, "PHP", "v5.4", phpFile);
+                    if (File.Exists(thisPath))
+                        phpPath = thisPath;
+                }
+
+                if (phpPath == "")
+                {
+                    string thisPath = Path.Combine(ProgramFiles, "iis express", "PHP", "v5.3", phpFile);
+                    if (File.Exists(thisPath))
+                        phpPath = thisPath;
+                }
+
+                if (phpPath == "")
+                {
+                    string thisPath = Path.Combine(ProgramFiles, "iis express", "PHP", "v5.4", phpFile);
+                    if (File.Exists(thisPath))
+                        phpPath = thisPath;
+                }
+
+                if (phpPath == "")
+                {
+                    string thisPath = Path.Combine(ProgramFiles, "PHP", phpFile);
+                    if (File.Exists(thisPath))
+                        phpPath = thisPath;
+                }
+
+                //3rd if still no path, then return default version
+                if (phpPath == "")
+                    return Resources.PHPDefaultRuntimeVersion;
+
+                //4th path found, get version
+                FileVersionInfo vi = FileVersionInfo.GetVersionInfo(phpPath);
+
+                return vi.FileMajorPart.ToString() + "." + vi.FileMinorPart.ToString() + "." + vi.FileBuildPart.ToString();
             }
 
             public override bool Match(CloudRuntimePackage runtime)
@@ -528,7 +600,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.CloudService
 
             protected override void ApplyScaffoldingChanges(CloudRuntimePackage package)
             {
-                
+
             }
         }
 
