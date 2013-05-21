@@ -20,9 +20,10 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System.Globalization;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using Utilities.Common;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Add, "AzureDataDisk", DefaultParameterSetName = "CreateNew"), OutputType(typeof(IPersistentVM))]
     public class AddAzureDataDiskCommand : VirtualMachineConfigurationCmdletBase
@@ -107,7 +108,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             {
                 ThrowTerminatingError(
                     new ErrorRecord(
-                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "A data disk has already been assigned to LUN #{0} for this VM. Specify a different LUN or use Set-DataDisk to change the configuration settings of the existing disk.", this.LUN)),
+                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.DataDiskAlreadySpecifiedForVM, this.LUN)),
                             string.Empty,
                             ErrorCategory.InvalidData,
                             null));
@@ -167,7 +168,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             var currentSubscription = this.GetCurrentSubscription();
             if ((currentSubscription == null || currentSubscription.CurrentStorageAccount == null) && this.MediaLocation == null && string.Compare(this.ParameterSetName, "CreateNew", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                throw new ArgumentException("Must specify MediaLocation or set a default storage account using Set-AzureSubscription.");
+                throw new ArgumentException(Resources.MediaLocationOrDefaultStorageAccountMustBeSpecified);
             }
         }
     }

@@ -19,6 +19,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Common
     using System.Globalization;
     using System.Linq;
     using System.Management.Automation;
+    using Properties;
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class ValidateVMSizeAttribute : ValidateEnumeratedArgumentsAttribute
@@ -57,7 +58,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Common
             var stringElement = element.ToString();
             if(validValues.FirstOrDefault(s => string.Compare(s, stringElement, true, CultureInfo.InvariantCulture) == 0)  == null)
             {
-                var message = string.Format("ValidateSetFailure - Invalid VM Size specified: '{0}', valid values are: '{1}'", stringElement, commaSeparatedVMSizes);
+                var message = string.Format(Resources.InvalidVMSize, stringElement, commaSeparatedVMSizes);
                 throw new ValidationMetadataException(message);
             }
         }

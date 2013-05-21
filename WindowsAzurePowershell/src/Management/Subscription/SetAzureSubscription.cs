@@ -136,23 +136,23 @@ namespace Microsoft.WindowsAzure.Management.Subscription
             else
             {
                 // Update or create a new subscription
-                GlobalComponents globalComponents;
+                GlobalSettingsManager globalSettingsManager;
                 try
                 {
-                    globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
+                    globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
                 }
                 catch (FileNotFoundException)
                 {
                     // assume that import has never been ran and just create it.
-                    globalComponents = GlobalComponents.Create(GlobalPathInfo.GlobalSettingsDirectory,
+                    globalSettingsManager = GlobalSettingsManager.Create(GlobalPathInfo.GlobalSettingsDirectory,
                         subscriptionDataFile,
                         certificate,
                         serviceEndpoint);
                 }
 
-                SubscriptionData subscription = globalComponents.Subscriptions.ContainsKey(subscriptionName)
-                    ? globalComponents.Subscriptions[subscriptionName]
-                    : new SubscriptionData { SubscriptionName = subscriptionName, IsDefault = (globalComponents.Subscriptions.Count == 0) };
+                SubscriptionData subscription = globalSettingsManager.Subscriptions.ContainsKey(subscriptionName)
+                    ? globalSettingsManager.Subscriptions[subscriptionName]
+                    : new SubscriptionData { SubscriptionName = subscriptionName, IsDefault = (globalSettingsManager.Subscriptions.Count == 0) };
 
                 if (parameterSetName == "CommonSettings")
                 {
@@ -160,8 +160,8 @@ namespace Microsoft.WindowsAzure.Management.Subscription
                 }
 
                 // Create or update
-                globalComponents.Subscriptions[subscription.SubscriptionName] = subscription;
-                globalComponents.SaveSubscriptions(subscriptionDataFile);
+                globalSettingsManager.Subscriptions[subscription.SubscriptionName] = subscription;
+                globalSettingsManager.SaveSubscriptions(subscriptionDataFile);
 
                 currentSubscription = this.GetCurrentSubscription();
                 if (currentSubscription == null || string.Compare(currentSubscription.SubscriptionName, subscription.SubscriptionName, StringComparison.OrdinalIgnoreCase) == 0)

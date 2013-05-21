@@ -34,6 +34,8 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
         protected static string downloadDirRoot;
 
         private static string ContainerPrefix = "anonymousbvt";
+        protected static string StorageAccountName;
+        protected static string StorageEndPoint;
         protected static bool useHttps;
 
         [ClassInitialize()]
@@ -41,9 +43,10 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
         {
             TestBase.TestClassInitialize(testContext);
             CLICommonBVT.SaveAndCleanSubScriptionAndEnvConnectionString();
-            string StorageAccountName = Test.Data.Get("StorageAccountName");
+            StorageAccountName = Test.Data.Get("StorageAccountName");
+            StorageEndPoint = Test.Data.Get("StorageEndPoint").Trim();
             useHttps = true;
-            PowerShellAgent.SetAnonymousStorageContext(StorageAccountName, useHttps);
+            PowerShellAgent.SetAnonymousStorageContext(StorageAccountName, useHttps, StorageEndPoint);
             downloadDirRoot = Test.Data.Get("DownloadDir");
             SetupDownloadDir();
         }
@@ -209,12 +212,46 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
         }
 
         [TestMethod()]
+        [TestCategory(Tag.BVT)]
         public void MakeSureBvtUsingAnonymousContext()
         {
             //TODO EnvKey is not empty since we called SaveAndCleanSubScriptionAndEnvConnectionString when initializing
             string key = System.Environment.GetEnvironmentVariable(CLICommonBVT.EnvKey);
             Test.Assert(string.IsNullOrEmpty(key), string.Format("env connection string {0} should be null or empty", key));
             Test.Assert(PowerShellAgent.Context != null, "PowerShell context should be not null when running bvt against Anonymous storage account");
+        }
+
+        /// <summary>
+        /// Anonymous storage context should work with specified end point
+        /// </summary>
+        [TestMethod()]
+        [TestCategory(Tag.BVT)]
+        public void AnonymousContextWithEndPoint()
+        {
+            string containerName = Utility.GenNameString(ContainerPrefix);
+            CloudBlobContainer container = blobUtil.CreateContainer(containerName, BlobContainerPublicAccessType.Blob);
+
+            try
+            {
+                string pageBlobName = Utility.GenNameString("pageblob");
+                string blockBlobName = Utility.GenNameString("blockblob");
+                ICloudBlob blockBlob = blobUtil.CreateBlockBlob(container, blockBlobName);
+                ICloudBlob pageBlob = blobUtil.CreatePageBlob(container, pageBlobName);
+
+                agent.UseContextParam = false;
+                string cmd = string.Format("new-azurestoragecontext -StorageAccountName {0} " +
+                    "-Anonymous -EndPoint {1}", StorageAccountName, StorageEndPoint);
+                ((PowerShellAgent)agent).AddPipelineScript(cmd);
+                Test.Assert(agent.GetAzureStorageBlob(blockBlobName, containerName), Utility.GenComparisonData("Get-AzureStorageBlob", true));
+                agent.OutputValidation(new List<ICloudBlob> { blockBlob });
+                ((PowerShellAgent)agent).AddPipelineScript(cmd);
+                Test.Assert(agent.GetAzureStorageBlob(pageBlobName, containerName), Utility.GenComparisonData("Get-AzureStorageBlob", true));
+                agent.OutputValidation(new List<ICloudBlob> { pageBlob });
+            }
+            finally
+            {
+                blobUtil.RemoveContainer(containerName);
+            }
         }
     }
 }

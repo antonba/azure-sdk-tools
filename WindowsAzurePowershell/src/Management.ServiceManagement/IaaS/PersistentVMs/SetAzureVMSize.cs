@@ -17,7 +17,6 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System;
     using System.Management.Automation;
     using Model;
-    using Common;
 
     [Cmdlet(VerbsCommon.Set, "AzureVMSize"), OutputType(typeof(IPersistentVM))]
     public class SetAzureVMSizeCommand : VirtualMachineConfigurationCmdletBase

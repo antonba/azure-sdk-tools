@@ -102,6 +102,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Security.Cryptography, Version=1.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Security.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -221,6 +225,22 @@
     <Compile Include="FunctionalTests\IaasCmdletInfo\UpdateAzureDiskCmdletInfo.cs" />
     <Compile Include="FunctionalTests\IaasCmdletInfo\UpdateAzureVMImageCmdletInfo.cs" />
     <Compile Include="FunctionalTests\IaasCmdletInfo\WindowsAzurePowershellScript.cs" />
+    <Compile Include="FunctionalTests\PaasCmdletInfo\GetAzureServiceDiagnosticsExtensionCmdletInfo.cs" />
+    <Compile Include="FunctionalTests\PaasCmdletInfo\GetAzureServiceRemoteDesktopExtensionCmdletInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FunctionalTests\PaasCmdletInfo\NewAzureServiceDiagnosticsExtensionConfigCmdletInfo.cs" />
+    <Compile Include="FunctionalTests\PaasCmdletInfo\NewAzureServiceRemoteDesktopExtensionConfigCmdletInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FunctionalTests\PaasCmdletInfo\RemoveAzureServiceDiagnosticsExtensionCmdletInfo.cs" />
+    <Compile Include="FunctionalTests\PaasCmdletInfo\RemoveAzureServiceRemoteDesktopExtensionCmdletInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FunctionalTests\PaasCmdletInfo\SetAzureServiceDiagnosticsExtensionCmdletInfo.cs" />
+    <Compile Include="FunctionalTests\PaasCmdletInfo\SetAzureServiceRemoteDesktopExtensionCmdletInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="FunctionalTests\PowershellCore\PowershellCmdletScript.cs" />
     <Compile Include="FunctionalTests\SaveAzureVhdTest.cs" />
     <Compile Include="FunctionalTests\ScenarioTest.cs" />
@@ -280,14 +300,15 @@
     <None Include="Resources\affinityGroupData.csv" />
     <None Include="Resources\certificateData.csv" />
     <None Include="Resources\download_VHD.csv" />
+    <None Include="Resources\HelloNoDiag.cscfg" />
+    <None Include="Resources\HelloNoDiag.cspkg" />
+    <None Include="Resources\nodiagpackage.csv" />
     <None Include="Resources\OneWebOneWorker.cscfg" />
     <None Include="Resources\OneWebOneWorker.cspkg" />
     <None Include="Resources\overwrite_VHD.csv" />
     <None Include="Resources\package.csv" />
     <None Include="Resources\packageScenario.csv" />
     <None Include="Resources\patch_VHD.csv" />
-    <None Include="Resources\pstestcert.cer" />
-    <None Include="Resources\pstestcert.pfx" />
     <None Include="Resources\resume_VHD.csv" />
     <None Include="Resources\SampleAppV1.cscfg" />
     <None Include="Resources\SampleAppV1.cspkg" />
@@ -320,6 +341,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FunctionalTests\Readme.txt" />
+    <Content Include="lib\Security.Cryptography.dll" />
+    <Content Include="Resources\da.xml" />
+    <Content Include="Resources\RDPTest.exe" />
+    <Content Include="Resources\tclientmanagedex.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestScripts\" />

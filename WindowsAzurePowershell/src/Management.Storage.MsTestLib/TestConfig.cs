@@ -156,19 +156,19 @@ namespace MS.Test.Common.MsTestLib
                 {
                     if (this[Test.FullClassName][Test.MethodName].MethodParams.ContainsKey(paramName))
                     {
-                        return this[Test.FullClassName][Test.MethodName].MethodParams[paramName];
+                        return this[Test.FullClassName][Test.MethodName].MethodParams[paramName].Trim();
                     }
                 }
 
                 if (this[Test.FullClassName].ClassParams.ContainsKey(paramName))
                 {
-                    return this[Test.FullClassName].ClassParams[paramName];
+                    return this[Test.FullClassName].ClassParams[paramName].Trim();
                 }
             }
 
             if (TestParams.ContainsKey(paramName))
             {
-                return TestParams[paramName];
+                return TestParams[paramName].Trim();
             }
 
             throw new ArgumentException("The test param does not exist.", paramName);

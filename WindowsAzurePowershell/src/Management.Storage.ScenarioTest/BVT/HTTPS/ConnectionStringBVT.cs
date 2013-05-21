@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Management.Storage.ScenarioTest.Common;
 
 namespace Management.Storage.ScenarioTest.BVT.HTTPS
 {
@@ -39,11 +40,10 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
             //first set the storage account
             //second init common bvt
             //third set storage context in powershell
-            string ConnectionString = Test.Data.Get("HTTPSConnectionString");
-            SetUpStorageAccount = CloudStorageAccount.Parse(ConnectionString);
+            SetUpStorageAccount = TestBase.GetCloudStorageAccountFromConfig();
 
             CLICommonBVT.CLICommonBVTInitialize(testContext);
-            PowerShellAgent.SetStorageContext(ConnectionString);
+            PowerShellAgent.SetStorageContext(SetUpStorageAccount.ToString(true));
             useHttps = true;
         }
 

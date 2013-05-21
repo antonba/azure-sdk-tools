@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Management.Storage.ScenarioTest.Common;
 
 namespace Management.Storage.ScenarioTest.BVT.HTTPS
 {
@@ -33,8 +34,8 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
     class NameKeyContextBVT : CLICommonBVT
     {
         protected static bool useHttps;
-        private static string StorageAccountName;
-        private static string StorageAccountKey;
+        protected static string StorageAccountName;
+        protected static bool isSecondary;
 
         [ClassInitialize()]
         public static void NameKeyContextBVTClassInitialize(TestContext testContext)
@@ -43,13 +44,15 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
             //second init common bvt
             //third set storage context in powershell
             StorageAccountName = Test.Data.Get("StorageAccountName");
-            StorageAccountKey = Test.Data.Get("StorageAccountKey");
+            string StorageAccountKey = Test.Data.Get("StorageAccountKey");
+            string StorageEndPoint = Test.Data.Get("StorageEndPoint");
             StorageCredentials credential = new StorageCredentials(StorageAccountName, StorageAccountKey);
             useHttps = true;
-            SetUpStorageAccount = new CloudStorageAccount(credential, useHttps);
+            isSecondary = false;
+            SetUpStorageAccount = Utility.GetStorageAccountWithEndPoint(credential, useHttps, StorageEndPoint);
 
             CLICommonBVT.CLICommonBVTInitialize(testContext);
-            PowerShellAgent.SetStorageContext(StorageAccountName, StorageAccountKey, useHttps);
+            PowerShellAgent.SetStorageContext(StorageAccountName, StorageAccountKey, useHttps, StorageEndPoint);
         }
 
         [ClassCleanup()]
@@ -81,6 +84,29 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
             }
 
             Test.Assert(uri.ToString().StartsWith(uriPrefix), string.Format("The prefix of container uri should be {0}, actually it's {1}", uriPrefix, uri));
+        }
+
+        [TestMethod]
+        [TestCategory(Tag.BVT)]
+        public void MakeSureUsingCorrectEndPoint()
+        {
+            EndPointTest(isSecondary);
+        }
+
+        protected void EndPointTest(bool isSecondary)
+        {
+            string configKey = string.Empty;
+
+            if (isSecondary)
+            {
+                configKey = "Secondary";
+            }
+
+            string endpointdomain = Test.Data.Get(string.Format("{0}StorageEndPoint", configKey));
+            string [] endpoints = Utility.GetStorageEndPoints(SetUpStorageAccount.Credentials.AccountName, useHttps, endpointdomain);
+            TestBase.ExpectEqual(endpoints[0], SetUpStorageAccount.BlobEndpoint.ToString(), "blob endpoint");
+            TestBase.ExpectEqual(endpoints[1], SetUpStorageAccount.QueueEndpoint.ToString(), "queue endpoint");
+            TestBase.ExpectEqual(endpoints[2], SetUpStorageAccount.TableEndpoint.ToString(), "table endpoint");
         }
     }
 }

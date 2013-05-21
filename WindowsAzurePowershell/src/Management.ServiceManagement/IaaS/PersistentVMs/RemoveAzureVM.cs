@@ -16,8 +16,8 @@
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 {
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using Utilities.Common;
+    using WindowsAzure.ServiceManagement;
 
     [Cmdlet(VerbsCommon.Remove, "AzureVM"), OutputType(typeof(ManagementOperationContext))]
     public class RemoveAzureVMCommand : IaaSDeploymentManagementCmdletBase
@@ -50,7 +50,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             int roleCount = 0;
 
             Deployment deployment = null;
-            InvokeInOperationContext(() => deployment = RetryCall(s => Channel.GetDeploymentBySlot(s, ServiceName, "Production")));
+            InvokeInOperationContext(() => deployment = RetryCall(s => Channel.GetDeploymentBySlot(s, ServiceName, DeploymentSlotType.Production)));
             roleCount = deployment.RoleInstanceList.Count;
 
             if (roleCount > 1)
@@ -59,7 +59,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             }
             else
             {
-                ExecuteClientActionInOCS(null, CommandRuntime.ToString(), s => Channel.DeleteDeploymentBySlot(s, ServiceName, "Production"));
+                ExecuteClientActionInOCS(null, CommandRuntime.ToString(), s => Channel.DeleteDeploymentBySlot(s, ServiceName, DeploymentSlotType.Production));
             }
         }
     }

@@ -18,9 +18,10 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Certificates
     using System.Management.Automation;
     using System.Security.Cryptography.X509Certificates;
     using System.Security.Permissions;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using WindowsAzure.ServiceManagement;
     using Helpers;
+    using Properties;
 
     /// <summary>
     /// Upload a service certificate for the specified hosted service.
@@ -70,7 +71,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Certificates
             {
                 Data = Convert.ToBase64String(certData),
                 Password = Password,
-                CertificateFormat = "pfx"
+                CertificateFormat = Resources.Pfx_CertificateFormat
             };
             ExecuteClientActionInOCS(null, CommandRuntime.ToString(), s => this.Channel.AddCertificates(s, this.ServiceName, certificateFile));
         }

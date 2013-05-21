@@ -43,7 +43,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             {
                 var targetFile = Path.Combine(Directory.GetParent(Data.ValidSubscriptionsData[i]).FullName, "removeonce" + Path.GetFileName(Data.ValidSubscriptionsData[i]));
                 File.Copy(Data.ValidSubscriptionsData[i], targetFile, true);
-                var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, targetFile, Data.ValidPublishSettings[i]);
+                var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, targetFile, Data.ValidPublishSettings[i]);
                 MockCommandRuntime mockCommandRuntime = new MockCommandRuntime();
                 var removeSubscriptionCommand = new RemoveAzureSubscriptionCommand();
                 removeSubscriptionCommand.CommandRuntime = mockCommandRuntime;
@@ -54,7 +54,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
                 Assert.IsFalse(subscriptionsManager.Subscriptions.Values.Any(subscription => subscription.IsDefault));
 
                 // Clean
-                globalComponents.DeleteGlobalComponents();
+                globalSettingsManager.DeleteGlobalSettingsManager();
             }
         }
 
@@ -65,18 +65,18 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             {
                 var targetFile = Path.Combine(Directory.GetParent(Data.ValidSubscriptionsData[i]).FullName, "removeagain" + Path.GetFileName(Data.ValidSubscriptionsData[i]));
                 File.Copy(Data.ValidSubscriptionsData[i], targetFile, true);
-                var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, targetFile, Data.ValidPublishSettings[i]);
+                var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, targetFile, Data.ValidPublishSettings[i]);
                 MockCommandRuntime mockCommandRuntime = new MockCommandRuntime();
                 var removeSubscriptionCommand = new RemoveAzureSubscriptionCommand();
                 removeSubscriptionCommand.CommandRuntime = mockCommandRuntime;
                 removeSubscriptionCommand.RemoveSubscriptionProcess("mysub2", targetFile);
 
-                var subscriptionsManager = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, targetFile);
+                var subscriptionsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, targetFile);
                 Assert.IsFalse(subscriptionsManager.Subscriptions.Values.Any(subscription => subscription.SubscriptionName == "mysub2"));
                 Assert.IsTrue(subscriptionsManager.Subscriptions.Values.Any(subscription => subscription.IsDefault));
 
                 // Clean
-                globalComponents.DeleteGlobalComponents();
+                globalSettingsManager.DeleteGlobalSettingsManager();
             }
         }
 
@@ -87,11 +87,11 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             {
                 var targetFile = Path.Combine(Directory.GetParent(Data.ValidSubscriptionsData[i]).FullName, "removeonce" + Path.GetFileName(Data.ValidSubscriptionsData[i]));
                 File.Copy(Data.ValidSubscriptionsData[i], targetFile, true);
-                var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, targetFile, Data.ValidPublishSettings[i]);
+                var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, targetFile, Data.ValidPublishSettings[i]);
                 MockCommandRuntime mockCommandRuntime = new MockCommandRuntime();
                 
                 var removeSubscriptionCommand = new RemoveAzureSubscriptionCommand();
-                removeSubscriptionCommand.SetCurrentSubscription(globalComponents.Subscriptions["mysub1"]);
+                removeSubscriptionCommand.SetCurrentSubscription(globalSettingsManager.Subscriptions["mysub1"]);
                 removeSubscriptionCommand.CommandRuntime = mockCommandRuntime;
                 removeSubscriptionCommand.RemoveSubscriptionProcess("mysub1", targetFile);
 
@@ -101,7 +101,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
                 Assert.IsNull(removeSubscriptionCommand.GetCurrentSubscription());
 
                 // Clean
-                globalComponents.DeleteGlobalComponents();
+                globalSettingsManager.DeleteGlobalSettingsManager();
             }
         }
     }

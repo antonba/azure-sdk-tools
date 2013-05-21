@@ -140,6 +140,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model
         public Exception Error { get; set; }
     }
 
+    [Serializable]
     public class VhdParsingException : Exception
     {
         public VhdParsingException()

@@ -79,10 +79,10 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
         public const string CustomDomainsEnabledSettingsName = "CustomDomainsEnabled";
         public const string SslSupportSettingsName = "SslSupport";
 
-        public const string UserAgentHeaderValue = "WindowsAzurePowershell/v0.6.13.1";
+        public const string UserAgentHeaderValue = "WindowsAzurePowershell/v0.6.14";
         public static ProductInfoHeaderValue UserAgentValue = new ProductInfoHeaderValue(
             "WindowsAzurePowershell",
-            "v0.6.13.1");
+            "v0.6.14");
     }
 
     public static class HttpConstants
@@ -92,5 +92,35 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
 
         public static readonly MediaTypeWithQualityHeaderValue XmlMediaType =
             MediaTypeWithQualityHeaderValue.Parse("application/xml");
+    }
+
+    public static class EnvironmentName
+    {
+        public const string AzureCloud = "AzureCloud";
+
+        public const string AzureChinaCloud = "AzureChinaCloud";
+    }
+
+    public static class WindowsAzureEnvironmentConstants
+    {
+        public const string AzureServiceEndpoint = "https://management.core.windows.net/";
+
+        public const string ChinaServiceEndpoint = "https://management.core.chinacloudapi.cn/";
+
+        public const string AzurePublishSettingsFileUrl = "http://go.microsoft.com/fwlink/?LinkID=301775";
+
+        public const string ChinaPublishSettingsFileUrl = "http://go.microsoft.com/fwlink/?LinkID=301776";
+
+        public const string AzureStorageBlobEndpointFormat = "{0}://{1}.blob.core.windows.net/";
+
+        public const string AzureStorageQueueEndpointFormat = "{0}://{1}.queue.core.windows.net/";
+
+        public const string AzureStorageTableEndpointFormat = "{0}://{1}.table.core.windows.net/";
+
+        public const string ChinaStorageBlobEndpointFormat = "{0}://{1}.blob.core.chinacloudapi.cn/";
+
+        public const string ChinaStorageQueueEndpointFormat = "{0}://{1}.queue.core.chinacloudapi.cn/";
+
+        public const string ChinaStorageTableEndpointFormat = "{0}://{1}.table.core.chinacloudapi.cn/";
     }
 }

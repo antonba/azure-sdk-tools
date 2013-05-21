@@ -40,7 +40,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
         [TestMethod]
         public void TestGetSubscriptions()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var cmdletStub = new CmdletStub();
             var subscriptions = cmdletStub.GetSubscriptions(null);
@@ -51,13 +51,13 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             // There's a single default subscription
             Assert.AreEqual("Windows Azure Sandbox 9-220", subscriptions.Values.Single(subscription => subscription.IsDefault).SubscriptionName);
 
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
 
         [TestMethod]
         public void TestGetCurrentSubscription()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var cmdletStub = new CmdletStub();
             var subscriptions = cmdletStub.GetSubscriptions(null);
@@ -70,13 +70,13 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             Assert.AreEqual(currentSubscription.SubscriptionName, actualCurrentSubscription.SubscriptionName);
             Assert.AreEqual(currentSubscription.SubscriptionId, actualCurrentSubscription.SubscriptionId);
 
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
 
         [TestMethod]
         public void TestSetDefaultSubscription()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var newPath = Path.Combine(GlobalPathInfo.GlobalSettingsDirectory, "test.xml");
             File.Copy(Data.ValidSubscriptionsData[0], newPath, true);
@@ -88,17 +88,17 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             cmdletStub.SetDefaultSubscription(newDefaultSubscription.SubscriptionName, newPath);
 
             // Test - reimport and make sure the current subscription after import is the correct one
-            var subscriptionsManager = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, newPath).SubscriptionManager;
+            var subscriptionsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, newPath).SubscriptionManager;
             var defaultSubscription = subscriptionsManager.Subscriptions.Values.First(subscription => subscription.IsDefault);
             Assert.AreEqual(newDefaultSubscription.SubscriptionName, defaultSubscription.SubscriptionName);
 
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
 
         [TestMethod]
         public void TestUpdateSubscriptions()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var cmdletStub = new CmdletStub();
             var subscriptions = cmdletStub.GetSubscriptions(Data.ValidSubscriptionsData[0]);
@@ -112,20 +112,20 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
             var newSubscriptions = cmdletStub.GetSubscriptions(newPath);
             Assert.IsFalse(newSubscriptions.ContainsKey(deleteSubscriptionKey));
 
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
 
         [TestMethod]
         public void TestGetSubscription()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var cmdletStub = new CmdletStub();
             var subscription = cmdletStub.GetSubscription("TestSubscription1", null);
 
             Assert.AreEqual("TestSubscription1", subscription.SubscriptionName);
 
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
     }
 

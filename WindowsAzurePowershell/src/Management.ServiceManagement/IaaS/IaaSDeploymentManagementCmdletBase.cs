@@ -23,6 +23,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System.Threading;
     using Utilities.Common;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     public class IaaSDeploymentManagementCmdletBase : ServiceManagementBaseCmdlet
     {
@@ -64,10 +65,10 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
                 {
                     try
                     {
-                        WriteVerboseWithTimestamp("Begin Operation: Get Deployment");
-                        CurrentDeployment = RetryCall(s => Channel.GetDeploymentBySlot(s, ServiceName, "Production"));
+                        WriteVerboseWithTimestamp(Resources.GetDeploymentBeginOperation);
+                        CurrentDeployment = RetryCall(s => Channel.GetDeploymentBySlot(s, ServiceName, DeploymentSlotType.Production));
                         GetDeploymentOperation = GetOperation();
-                        WriteVerboseWithTimestamp("Completed Operation: Get Deployment");
+                        WriteVerboseWithTimestamp(Resources.GetDeploymentCompletedOperation);
                     }
                     catch (Exception e)
                     {
@@ -119,25 +120,25 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 
                 if (deployment == null)
                 {
-                    throw new ApplicationException(String.Format("Could not find a deployment for '{0}' in '{1}' slot.", ServiceName, DeploymentSlotType.Production));
+                    throw new ApplicationException(String.Format(Resources.CouldNotFindDeployment, ServiceName, DeploymentSlotType.Production));
                 }
                 durableRoleInstance = deployment.RoleInstanceList.Find(ri => ri.RoleName == roleName);
 
                 if (currentInstanceStatus == null)
                 {
-                    this.WriteVerboseWithTimestamp("InstanceStatus is {0}", durableRoleInstance.InstanceStatus);
+                    this.WriteVerboseWithTimestamp(Resources.RoleInstanceStatus, durableRoleInstance.InstanceStatus);
                     currentInstanceStatus = durableRoleInstance.InstanceStatus;
                 }
 
                 if (currentInstanceStatus != durableRoleInstance.InstanceStatus)
                 {
-                    this.WriteVerboseWithTimestamp("InstanceStatus is {0}", durableRoleInstance.InstanceStatus);
+                    this.WriteVerboseWithTimestamp(Resources.RoleInstanceStatus, durableRoleInstance.InstanceStatus);
                     currentInstanceStatus = durableRoleInstance.InstanceStatus;
                 }
 
                 if(TerminalStates.FirstOrDefault(r => String.Compare(durableRoleInstance.InstanceStatus, r, true, CultureInfo.InvariantCulture) == 0) != null)
                 {
-                    var message = string.Format("VM creation failed, VM status is '{0}'", durableRoleInstance.InstanceStatus);
+                    var message = string.Format(Resources.VMCreationFailedWithVMStatus, durableRoleInstance.InstanceStatus);
                     throw new ApplicationException(message);
                 }
                 

@@ -12,6 +12,7 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using Management.Storage.ScenarioTest.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.WindowsAzure.Storage;
 using MS.Test.Common.MsTestLib;
@@ -34,12 +35,10 @@ namespace Management.Storage.ScenarioTest.BVT.HTTP
             //first set the storage account
             //second init common bvt
             //third set storage context in powershell
-            string ConnectionString = Test.Data.Get("HTTPEnvConnectionString");
-            SetUpStorageAccount = CloudStorageAccount.Parse(ConnectionString);
-
-            CLICommonBVT.CLICommonBVTInitialize(testContext);
-            System.Environment.SetEnvironmentVariable(EnvKey, ConnectionString);
             useHttps = false;
+            SetUpStorageAccount = TestBase.GetCloudStorageAccountFromConfig(string.Empty, useHttps);
+            CLICommonBVT.CLICommonBVTInitialize(testContext);
+            System.Environment.SetEnvironmentVariable(EnvKey, SetUpStorageAccount.ToString(true));
         }
 
         [ClassCleanup()]

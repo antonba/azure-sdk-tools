@@ -154,9 +154,10 @@ namespace Management.Storage.ScenarioTest.BVT
         /// </summary>
         private static void GenerateBvtTempFiles()
         {
-            CommonBlockFilePath = Test.Data.Get("BlockFilePath");
-            CommonPageFilePath = Test.Data.Get("PageFilePath");
-
+            CommonBlockFilePath = Path.Combine(Test.Data.Get("TempDir"), FileUtil.GetSpecialFileName());
+            CommonPageFilePath = Path.Combine(Test.Data.Get("TempDir"), FileUtil.GetSpecialFileName());
+            FileUtil.CreateDirIfNotExits(Path.GetDirectoryName(CommonBlockFilePath));
+            FileUtil.CreateDirIfNotExits(Path.GetDirectoryName(CommonPageFilePath));
             // Generate block file and page file which are used for uploading
             Helper.GenerateMediumFile(CommonBlockFilePath, 1);
             Helper.GenerateMediumFile(CommonPageFilePath, 1);
@@ -324,7 +325,7 @@ namespace Management.Storage.ScenarioTest.BVT
         [TestCategory(Tag.BVT)]
         public void DownloadBlobTest()
         {
-            string downloadDirPath = Test.Data.Get("DownloadDirPath");
+            string downloadDirPath = Test.Data.Get("DownloadDir");
             DownloadBlobTest(new PowerShellAgent(), CommonBlockFilePath, downloadDirPath, Microsoft.WindowsAzure.Storage.Blob.BlobType.BlockBlob);
             DownloadBlobTest(new PowerShellAgent(), CommonPageFilePath, downloadDirPath, Microsoft.WindowsAzure.Storage.Blob.BlobType.PageBlob);
         }

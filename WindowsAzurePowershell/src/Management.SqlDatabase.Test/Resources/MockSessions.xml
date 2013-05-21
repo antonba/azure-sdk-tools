@@ -8,7 +8,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/GetAccessToken</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers />
           <Cookies />
           <RequestText i:nil="true" />
@@ -38,7 +38,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('localhost')/Servers()?$top=1</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>AccessToken</Name>
@@ -104,7 +104,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('localhost')/$metadata</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers />
           <Cookies />
           <RequestText i:nil="true" />
@@ -128,7 +128,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/GetAccessToken</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers />
           <Cookies />
           <RequestText i:nil="true" />
@@ -158,7 +158,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Servers()?$top=1</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>AccessToken</Name>
@@ -232,7 +232,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/$metadata</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers />
           <Cookies />
           <RequestText i:nil="true" />
@@ -251,7 +251,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/GetAccessToken</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers />
           <Cookies />
           <RequestText i:nil="true" />
@@ -281,7 +281,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Servers()?$top=1</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>AccessToken</Name>
@@ -324,7 +324,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -493,7 +493,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb1'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -606,7 +606,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb2'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -724,7 +724,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/GetAccessToken</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>sqlauthorization</Name>
@@ -779,7 +779,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Servers()?$top=1</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -881,7 +881,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/$metadata</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>AccessToken</Name>
@@ -1201,7 +1201,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases</RequestUri>
           <Method>POST</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -1336,7 +1336,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases(4)</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -1443,7 +1443,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases</RequestUri>
           <Method>POST</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -1578,7 +1578,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases(5)</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -1690,7 +1690,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb1'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -1803,7 +1803,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases(4)</RequestUri>
           <Method>MERGE</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -1903,7 +1903,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb1'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2021,7 +2021,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb1'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2134,7 +2134,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases(4)</RequestUri>
           <Method>MERGE</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2234,7 +2234,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb3'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2352,7 +2352,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb1'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2465,7 +2465,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases(4)</RequestUri>
           <Method>DELETE</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2540,7 +2540,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb2'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2653,7 +2653,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases(5)</RequestUri>
           <Method>DELETE</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2728,7 +2728,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2846,7 +2846,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases</RequestUri>
           <Method>POST</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>
@@ -2958,7 +2958,7 @@
         <RequestInfo>
           <RequestUri>http://localhost:12345/MockTestServer/v1/ManagementService.svc/Server2('testserver')/Databases()?$filter=Name%20eq%20'testdb3'&amp;$top=2</RequestUri>
           <Method>GET</Method>
-          <UserAgent>WindowsAzurePowershell/v0.6.13.1</UserAgent>
+          <UserAgent>WindowsAzurePowershell/v0.6.14</UserAgent>
           <Headers>
             <Header>
               <Name>DataServiceVersion</Name>

@@ -108,7 +108,7 @@ namespace Management.Storage.ScenarioTest
         public abstract bool RemoveAzureStorageTable(string TableName, bool Force = true);
         public abstract bool RemoveAzureStorageTable(string[] TableNames, bool Force = true);
 
-        public abstract bool NewAzureStorageContext(string StorageAccountName, string StorageAccountKey);
+        public abstract bool NewAzureStorageContext(string StorageAccountName, string StorageAccountKey, string endPoint = "");
         public abstract bool NewAzureStorageContext(string ConnectionString);
 
         public abstract bool StartAzureStorageBlobCopy(string sourceUri, string destContainerName, string destBlobName, object destContext, bool force = true);

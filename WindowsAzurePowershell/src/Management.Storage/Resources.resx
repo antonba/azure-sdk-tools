@@ -300,16 +300,16 @@
     <comment>0 for time, 1 for message</comment>
   </data>
   <data name="HttpBlobEndPointFormat" xml:space="preserve">
-    <value>http://{0}.blob.core.windows.net/</value>
-    <comment>0 for storage account name</comment>
+    <value>http://{0}.blob.core.{1}/</value>
+    <comment>0 for storage account name, 1 for end point domain.</comment>
   </data>
   <data name="HttpQueueEndPointFormat" xml:space="preserve">
-    <value>http://{0}.queue.core.windows.net/</value>
-    <comment>0 for storage account name</comment>
+    <value>http://{0}.queue.core.{1}/</value>
+    <comment>0 for storage account name, 1 for end point domain.</comment>
   </data>
   <data name="HttpTableEndPointFormat" xml:space="preserve">
-    <value>http://{0}.table.core.windows.net/</value>
-    <comment>0 for storage account name</comment>
+    <value>http://{0}.table.core.{1}/</value>
+    <comment>0 for storage account name, 1 for end point domain.</comment>
   </data>
   <data name="CurrentStorageAccountNameNotFound" xml:space="preserve">
     <value>Current Storage Account not found in subscription '{0}'. Please set it use "Set-AzureSubscription".</value>
@@ -416,16 +416,16 @@
     <comment>0 for property name, 1 for property value</comment>
   </data>
   <data name="HttpsBlobEndPointFormat" xml:space="preserve">
-    <value>https://{0}.blob.core.windows.net/</value>
-    <comment>0 for storage account name</comment>
+    <value>https://{0}.blob.core.{1}/</value>
+    <comment>0 for storage account name, 1 for end point domain.</comment>
   </data>
   <data name="HttpsQueueEndPointFormat" xml:space="preserve">
-    <value>https://{0}.queue.core.windows.net/</value>
-    <comment>0 for storage account name</comment>
+    <value>https://{0}.queue.core.{1}/</value>
+    <comment>0 for storage account name, 1 for end point domain.</comment>
   </data>
   <data name="HttpsTableEndPointFormat" xml:space="preserve">
-    <value>https://{0}.table.core.windows.net/</value>
-    <comment>0 for storage account name</comment>
+    <value>https://{0}.table.core.{1}/</value>
+    <comment>0 for storage account name, 1 for end point domain.</comment>
   </data>
   <data name="CopyIdCannotBeEmpty" xml:space="preserve">
     <value>CopyId can not be empty.</value>
@@ -548,5 +548,12 @@ Failed: {2}.</value>
   <data name="CmdletFormat" xml:space="preserve">
     <value>{0}-{1}</value>
     <comment>0 for Cmdlet verb, 1 for Cmdlet noun.</comment>
+  </data>
+  <data name="DefaultStorageEndPointDomain" xml:space="preserve">
+    <value>windows.net</value>
+  </data>
+  <data name="InvalidStorageEndPoint" xml:space="preserve">
+    <value>Invalid storage end point '{0}'.</value>
+    <comment>0 for storage end point</comment>
   </data>
 </root>

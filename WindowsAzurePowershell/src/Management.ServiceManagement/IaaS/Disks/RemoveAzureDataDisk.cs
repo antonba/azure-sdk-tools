@@ -19,8 +19,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System.Globalization;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Remove, "AzureDataDisk"), OutputType(typeof(IPersistentVM))]
     public class RemoveAzureDataDiskCommand : VirtualMachineConfigurationCmdletBase
@@ -41,7 +42,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             {
                 ThrowTerminatingError(
                     new ErrorRecord(
-                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "A data disk is not currently assigned to LUN #{0} in the configuration of this VM.", LUN)),
+                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.DataDiskAlreadyAssignedInVMConfiguration, LUN)),
                             string.Empty,
                             ErrorCategory.InvalidData,
                             null));

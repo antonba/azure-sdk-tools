@@ -17,10 +17,11 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.StorageServices
     using System;
     using System.IO;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using Model;
     using Sync.Download;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
 
     /// <summary>
@@ -106,7 +107,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.StorageServices
 
                 if (!String.IsNullOrEmpty(destinationUri.Uri.Query))
                 {
-                    var message = String.Format("SAS Uri for the destination blob is not supported in patch mode:{0}", destinationUri.Uri);
+                    var message = String.Format(Resources.AddAzureVhdCommandSASUriNotSupportedInPatchMode, destinationUri.Uri);
                     throw new ArgumentOutOfRangeException("Destination", message);
                 }
             }

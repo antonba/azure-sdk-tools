@@ -12,6 +12,7 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+
 namespace Microsoft.WindowsAzure.Management.Utilities.Common
 {
     using System;
@@ -21,11 +22,12 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
     using System.Reflection;
     using System.ServiceModel;
     using System.ServiceModel.Dispatcher;
-    using System.Threading;
     using ServiceManagement;
+    using Properties;
 
     public abstract class ServiceManagementBaseCmdlet : CloudBaseCmdlet<IServiceManagement>
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Disposing the client would also dispose the channel we are returning.")]
         protected override IServiceManagement CreateChannel()
         {
             // If ShareChannel is set by a unit test, use the same channel that
@@ -89,12 +91,12 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
         {
             Operation operation = null;
 
-            WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", operationDescription));
+            WriteVerboseWithTimestamp(string.Format(Resources.ServiceManagementExecuteClientActionBeginOperation, operationDescription));
 
             RetryCall(action);
             operation = GetOperation();
 
-            WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", operationDescription));
+            WriteVerboseWithTimestamp(string.Format(Resources.ServiceManagementExecuteClientActionCompletedOperation, operationDescription));
 
             if (operation != null)
             {
@@ -130,7 +132,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                 {
                     Operation operation = null;
 
-                    WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", operationDescription));
+                    WriteVerboseWithTimestamp(string.Format(Resources.ServiceManagementExecuteClientActionInOCSBeginOperation, operationDescription));
 
                     try
                     {
@@ -142,7 +144,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                         WriteErrorDetails(ex);
                     }
 
-                    WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", operationDescription));
+                    WriteVerboseWithTimestamp(string.Format(Resources.ServiceManagementExecuteClientActionInOCSCompletedOperation, operationDescription));
 
                     if (operation != null)
                     {
@@ -196,7 +198,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                     TResult result = null;
                     Operation operation = null;
 
-                    WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", operationDescription));
+                    WriteVerboseWithTimestamp(string.Format(Resources.ServiceManagementExecuteClientActionInOCSBeginOperation, operationDescription));
 
                     try
                     {
@@ -208,7 +210,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                         WriteErrorDetails(ex);
                     }
 
-                    WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", operationDescription));
+                    WriteVerboseWithTimestamp(string.Format(Resources.ServiceManagementExecuteClientActionInOCSCompletedOperation, operationDescription));
 
                     if (result != null && operation != null)
                     {

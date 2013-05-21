@@ -355,3 +355,19 @@ function Test-EnableApplicationDiagnosticOnFileSystem
 	Assert-True { $website.AzureDriveTraceEnabled }
 	Assert-AreEqual Warning $website.AzureDriveTraceLevel
 }
+
+########################################################################### Get-AzureWebsiteLocation Scenario Tests ###########################################################################
+
+<#
+.SYNOPSIS
+Tests Get-AzureWebsiteLocation and expects to return valid websites.
+#>
+function Test-GetAzureWebsiteLocation
+{
+	# Test
+	$locations = Get-AzureWebsiteLocation;
+
+	# Assert
+	Assert-NotNull { $locations }
+	Assert-True { $locations.Count -gt 0 }
+}

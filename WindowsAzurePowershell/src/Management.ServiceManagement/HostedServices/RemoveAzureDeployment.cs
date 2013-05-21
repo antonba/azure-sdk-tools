@@ -15,8 +15,9 @@
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 {
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     /// <summary>
     /// Deletes the specified deployment.
@@ -42,7 +43,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
         }
 
         [Parameter(Position = 1, Mandatory = true, ValueFromPipelineByPropertyName = true, HelpMessage = "Deployment slot. Staging | Production")]
-        [ValidateSet("Staging", "Production", IgnoreCase = true)]
+        [ValidateSet(DeploymentSlotType.Staging, DeploymentSlotType.Production, IgnoreCase = true)]
         public string Slot
         {
             get;
@@ -63,7 +64,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 
         protected override void OnProcessRecord()
         {
-            if (this.Force.IsPresent || this.ShouldContinue("This cmdlet will remove deployed applications including VMs from the specified deployment slot. Do you want to continue?", "Deployment Deletion"))
+            if (this.Force.IsPresent || this.ShouldContinue(Resources.DeployedArtifactsWillBeRemoved, Resources.DeploymentDeletion))
             {
                 this.RemoveDeploymentProcess();
             }

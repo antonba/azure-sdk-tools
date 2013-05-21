@@ -19,8 +19,8 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using Utilities.Common;
+    using WindowsAzure.ServiceManagement;
     using Model;
 
     [Cmdlet(VerbsCommon.Get, "AzureDisk"), OutputType(typeof(IEnumerable<DiskContext>))]

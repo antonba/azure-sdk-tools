@@ -204,7 +204,7 @@
     <Compile Include="Common\ManagementOperationContext.cs" />
     <Compile Include="Common\SubscriptionData.cs" />
     <Compile Include="Common\SubscriptionDataExtended.cs" />
-    <Compile Include="Common\GlobalComponents.cs" />
+    <Compile Include="Common\GlobalSettingsManager.cs" />
     <Compile Include="Common\GlobalPathInfo.cs" />
     <Compile Include="Common\ISessionManager.cs" />
     <Compile Include="Common\ISubscriptionsManager.cs" />
@@ -264,6 +264,7 @@
     <Compile Include="Subscription\Contract\ProviderResource.cs" />
     <Compile Include="Subscription\ProviderRegistrationConstants.cs" />
     <Compile Include="Subscription\SubscriptionClient.cs" />
+    <Compile Include="Common\WindowsAzureEnvironment.cs" />
     <Compile Include="Websites\Common\DeploymentBaseCmdlet.cs" />
     <Compile Include="Websites\Common\IGithubCmdlet.cs" />
     <Compile Include="Websites\Common\WebsiteContextBaseCmdlet.cs" />
@@ -348,9 +349,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Microsoft.WindowsAzure.Management.ServiceBus.format.ps1xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.WindowsAzure.Management.Store.format.ps1xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Microsoft.WindowsAzure.Management.WebSites.format.ps1xml">
@@ -457,6 +455,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Microsoft.WindowsAzure.Management.CloudService.format.ps1xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Microsoft.WindowsAzure.Management.Store.format.ps1xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="PostBuildCleanup.bat" />

@@ -15,10 +15,11 @@
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTests.IaasCmdletInfo
 {
     using Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTests.PowershellCore;
+    using Microsoft.WindowsAzure.Management.ServiceManagement.Extensions;
 
     public class NewAzureDeploymentCmdletInfo : CmdletsInfo
     {
-        public NewAzureDeploymentCmdletInfo(string serviceName, string packagePath, string configName, string slot, string label, string name, bool doNotStart, bool warning)
+        public NewAzureDeploymentCmdletInfo(string serviceName, string packagePath, string configName, string slot, string label, string name, bool doNotStart, bool warning, ExtensionConfigurationInput config)
         {
             cmdletName = Utilities.NewAzureDeploymentCmdletName;
 
@@ -43,6 +44,10 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             {
                 cmdletParams.Add(new CmdletParam("TreatWarningsAsError"));
             }  
+            if (config != null)
+            {
+                cmdletParams.Add(new CmdletParam("ExtensionConfiguration", config));
+            }
         }
     }
 }

@@ -16,7 +16,8 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Model
 {
     using System;
     using System.IO;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
+    using Properties;
 
     public class VirtualNetworkSupportedDevicesContext : ManagementOperationContext
     {
@@ -26,12 +27,12 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Model
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentNullException("filePath", "A file path should be specified.");
+                throw new ArgumentNullException("filePath", Resources.VirtualNetworkSupportedDevicesContextMissingFilePath);
             }
 
             if (!Directory.Exists(Path.GetDirectoryName(filePath)))
             {
-                throw new ArgumentException("The directory specified by the file path does not exist.", "filePath");
+                throw new ArgumentException(Resources.VirtualNetworkSupportedDevicesContextDirectoryDoesNotExist, "filePath");
             }
 
             using (StreamWriter outfile = new StreamWriter(filePath))

@@ -30,24 +30,13 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
         {
             // Set test environment variables
             Environment.SetEnvironmentVariable(Resources.PublishSettingsUrlEnv, _publishSettingsUrl);
-            Environment.SetEnvironmentVariable(Resources.AzureHostNameSuffixEnv, _azureHostNameSuffix);
         }
 
         [ClassCleanup]
         public static void ClassCleanup()
         {
             // Delete test environment variables
-            Environment.SetEnvironmentVariable(Resources.AzureHostNameSuffixEnv, null);
             Environment.SetEnvironmentVariable(Resources.PublishSettingsUrlEnv, null);
-        }
-
-        [TestMethod]
-        public void TestPublishSettingsUrl()
-        {
-            string expected = _publishSettingsUrl;
-            string actual = General.PublishSettingsUrl;
-
-            Assert.AreEqual<string>(expected, actual);
         }
 
         [TestMethod]
@@ -55,25 +44,6 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
         {
             string expected = Resources.AzurePortalUrl;
             string actual = General.AzurePortalUrl;
-
-            Assert.AreEqual<string>(expected, actual);
-        }
-
-        [TestMethod]
-        public void TestAzureWebsiteHostNameSuffix()
-        {
-            string expected = _azureHostNameSuffix;
-            string actual = General.AzureWebsiteHostNameSuffix;
-
-            Assert.AreEqual<string>(expected, actual);
-        }
-
-        [TestMethod]
-        public void TestPublishSettingsUrlWithRealm()
-        {
-            string realm = "a realm";
-            string expected = _publishSettingsUrl + "&whr=" + realm;
-            string actual = General.PublishSettingsUrlWithRealm(realm);
 
             Assert.AreEqual<string>(expected, actual);
         }

@@ -18,7 +18,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
     using System.Linq;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
 
     public static class CertUtils
     {
@@ -60,7 +60,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
             {
                 Data = Convert.ToBase64String(certificateData),
                 Password = password,
-                CertificateFormat = "pfx"
+                CertificateFormat = Properties.Resources.Pfx_CertificateFormat
             };
             return certificateFile;
         }

@@ -20,7 +20,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Utilities.Common
     {
         public void RemovePublishSettingsProcess(string azureSdkDirPath)
         {
-            GlobalComponents.Load(azureSdkDirPath).DeleteGlobalComponents();
+            GlobalSettingsManager.Load(azureSdkDirPath).DeleteGlobalSettingsManager();
         }
     }
 }

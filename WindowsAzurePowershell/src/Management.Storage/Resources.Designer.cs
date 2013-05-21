@@ -367,6 +367,15 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to windows.net.
+        /// </summary>
+        internal static string DefaultStorageEndPointDomain {
+            get {
+                return ResourceManager.GetString("DefaultStorageEndPointDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Directory &apos;{0}&apos; doesn&apos;t exist..
         /// </summary>
         internal static string DirectoryNotExists {
@@ -520,7 +529,7 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://{0}.blob.core.windows.net/.
+        ///   Looks up a localized string similar to http://{0}.blob.core.{1}/.
         /// </summary>
         internal static string HttpBlobEndPointFormat {
             get {
@@ -538,7 +547,7 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://{0}.queue.core.windows.net/.
+        ///   Looks up a localized string similar to http://{0}.queue.core.{1}/.
         /// </summary>
         internal static string HttpQueueEndPointFormat {
             get {
@@ -547,7 +556,7 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://{0}.blob.core.windows.net/.
+        ///   Looks up a localized string similar to https://{0}.blob.core.{1}/.
         /// </summary>
         internal static string HttpsBlobEndPointFormat {
             get {
@@ -565,7 +574,7 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://{0}.queue.core.windows.net/.
+        ///   Looks up a localized string similar to https://{0}.queue.core.{1}/.
         /// </summary>
         internal static string HttpsQueueEndPointFormat {
             get {
@@ -574,7 +583,7 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://{0}.table.core.windows.net/.
+        ///   Looks up a localized string similar to https://{0}.table.core.{1}/.
         /// </summary>
         internal static string HttpsTableEndPointFormat {
             get {
@@ -583,7 +592,7 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://{0}.table.core.windows.net/.
+        ///   Looks up a localized string similar to http://{0}.table.core.{1}/.
         /// </summary>
         internal static string HttpTableEndPointFormat {
             get {
@@ -768,6 +777,15 @@ namespace Microsoft.WindowsAzure.Management.Storage {
         internal static string InvalidStartTime {
             get {
                 return ResourceManager.GetString("InvalidStartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid storage end point &apos;{0}&apos;..
+        /// </summary>
+        internal static string InvalidStorageEndPoint {
+            get {
+                return ResourceManager.GetString("InvalidStorageEndPoint", resourceCulture);
             }
         }
         

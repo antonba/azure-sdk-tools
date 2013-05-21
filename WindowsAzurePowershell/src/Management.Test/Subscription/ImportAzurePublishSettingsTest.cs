@@ -46,7 +46,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Subscription
             mockCommandRuntime = new MockCommandRuntime();
             cmdlet = new ImportAzurePublishSettingsCommand();
             cmdlet.CommandRuntime = mockCommandRuntime;
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             
             cmdlet.ImportSubscriptionFile(
@@ -57,7 +57,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Subscription
             Assert.AreEqual(currentSubscription.SubscriptionName, Data.Subscription1);
             Assert.IsTrue(currentSubscription.IsDefault);
 
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
 
         [TestMethod]

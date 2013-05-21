@@ -78,6 +78,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Download
 
             Program.SyncOutput.WriteVerboseWithTimestamp("Downloading the blob: {0}", parameters.BlobUri.BlobName);
 
+            var fileStreamLock = new object();
             using (new ServicePointHandler(parameters.BlobUri.Uri, parameters.ConnectionLimit))
             {
                 using (new ProgressTracker(downloadStatus, parameters.ProgressDownloadStatus, parameters.ProgressDownloadComplete, TimeSpan.FromSeconds(1)))
@@ -95,7 +96,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Download
 
                                             byte[] buffer = this.EnsureReadAsSize(b, (int)r.Length, bufferManager);
 
-                                            lock (fileStream)
+                                            lock (fileStreamLock)
                                             {
                                                 Trace.WriteLine(String.Format("Range:{0}", r));
                                                 fileStream.Seek(r.StartIndex, SeekOrigin.Begin);

@@ -23,21 +23,28 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
     public class VhdFileFactory
     {
         public VhdFile Create(string path)
-        {           
-            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024);
-            return Create(fileStream, Path.GetDirectoryName(path));
+        {
+            var streamSource = new StreamSource
+            {
+                Stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024),
+                VhdDirectory = Path.GetDirectoryName(path),
+                DisposeOnException = true
+            };
+            return Create(streamSource);
         }
 
         public VhdFile Create(Stream stream)
         {
-            return Create(stream, null);
+            return Create(new StreamSource { Stream = stream });
         }
 
-        private VhdFile Create(Stream stream, string vhdDirectory)
+        private VhdFile Create(StreamSource streamSource)
         {
-            var reader = new BinaryReader(stream, Encoding.Unicode);
+            var disposer = new Action(() => { if (streamSource.DisposeOnException) streamSource.Stream.Dispose(); });
+            bool throwing = false;
             try
             {
+                var reader = new BinaryReader(streamSource.Stream, Encoding.Unicode);
                 var dataReader = new VhdDataReader(reader);
                 var footer = new VhdFooterFactory(dataReader).CreateFooter();
 
@@ -50,15 +57,23 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
                     blockAllocationTable = new BlockAllocationTableFactory(dataReader, header).Create();
                     if (footer.DiskType == DiskType.Differencing)
                     {
-                        var parentPath = vhdDirectory == null ? header.ParentPath : Path.Combine(vhdDirectory, header.GetRelativeParentPath());
+                        var parentPath = streamSource.VhdDirectory == null ? header.ParentPath : Path.Combine(streamSource.VhdDirectory, header.GetRelativeParentPath());
                         parent = Create(parentPath);
                     }
                 }
-                return new VhdFile(footer, header, blockAllocationTable, parent, stream);
+                return new VhdFile(footer, header, blockAllocationTable, parent, streamSource.Stream);
             }
-            catch (EndOfStreamException)
+            catch (Exception e)
             {
-                throw new VhdParsingException("unsupported format");
+                throwing = true;
+                throw new VhdParsingException("unsupported format", e);
+            }
+            finally
+            {
+                if(throwing)
+                {
+                    disposer();
+                }
             }
         }
 
@@ -74,20 +89,66 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
             }
         }
 
+        private T TryCatch<T>(Func<IAsyncResult, T> method, Action disposer, IAsyncResult result)
+        {
+            bool throwing = true;
+            T methodResult = default(T);
+            try
+            {
+                methodResult = method(result);
+                throwing = false;
+            }
+            catch (EndOfStreamException e)
+            {
+                throw new VhdParsingException("unsupported format", e);
+            }
+            finally
+            {
+                if(throwing)
+                {
+                    disposer();
+                }
+            }
+            return methodResult;
+        }
+
+        private T TryCatch<T>(Func<T> method, Action disposer)
+        {
+            bool throwing = true;
+            T methodResult = default(T);
+            try
+            {
+                methodResult = method();
+                throwing = false;
+            }
+            catch (EndOfStreamException e)
+            {
+                throw new VhdParsingException("unsupported format", e);
+            }
+            finally
+            {
+                if(throwing)
+                {
+                    disposer();
+                }
+            }
+            return methodResult;
+        }
+
         public IAsyncResult BeginCreate(string path, AsyncCallback callback, object state)
         {
-            var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024);
-            return BeginCreate(stream, Path.GetDirectoryName(path), callback, state);
+            var streamSource = new StreamSource 
+            { 
+                Stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024), 
+                VhdDirectory = Path.GetDirectoryName(path),
+                DisposeOnException = true
+            };
+            return AsyncMachine<VhdFile>.BeginAsyncMachine(this.CreateAsync, streamSource, callback, state);
         }
 
         public IAsyncResult BeginCreate(Stream stream, AsyncCallback callback, object state)
         {
-            return BeginCreate(stream, null, callback, state);
-        }
-
-        private IAsyncResult BeginCreate(Stream stream, string vhdDirectory, AsyncCallback callback, object state)
-        {
-            var streamSource = new StreamSource {Stream = stream, VhdDirectory = vhdDirectory};
+            var streamSource = new StreamSource { Stream = stream};
             return AsyncMachine<VhdFile>.BeginAsyncMachine(this.CreateAsync, streamSource, callback, state);
         }
 
@@ -100,17 +161,25 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
         {
             public Stream Stream { get; set; }
             public string VhdDirectory { get; set; }
+            public bool DisposeOnException { get; set; }
+
+            public StreamSource()
+            {
+                this.DisposeOnException = false;
+            }
         }
 
         private IEnumerable<CompletionPort> CreateAsync(AsyncMachine<VhdFile> machine, StreamSource streamSource)
         {
-            var reader = new BinaryReader(streamSource.Stream, Encoding.Unicode);
-            var dataReader = new VhdDataReader(reader);
-            var footerFactory = new VhdFooterFactory(dataReader);
+            var disposer = new Action(() => { if (streamSource.DisposeOnException) streamSource.Stream.Dispose(); });
+
+            var reader = TryCatch(() => new BinaryReader(streamSource.Stream, Encoding.Unicode), disposer);
+            var dataReader = TryCatch(() => new VhdDataReader(reader), disposer);
+            var footerFactory = TryCatch(() => new VhdFooterFactory(dataReader), disposer);
 
             footerFactory.BeginCreateFooter(machine.CompletionCallback, null);
             yield return CompletionPort.SingleOperation;
-            var footer = TryCatch<VhdFooter>(footerFactory.EndCreateFooter, machine.CompletionResult);
+            var footer = TryCatch<VhdFooter>(footerFactory.EndCreateFooter, disposer, machine.CompletionResult);
 
             VhdHeader header = null;
             BlockAllocationTable blockAllocationTable = null;
@@ -121,12 +190,12 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
 
                 headerFactory.BeginCreateHeader(machine.CompletionCallback, null);
                 yield return CompletionPort.SingleOperation;
-                header = TryCatch<VhdHeader>(headerFactory.EndCreateHeader, machine.CompletionResult);
+                header = TryCatch<VhdHeader>(headerFactory.EndCreateHeader, disposer, machine.CompletionResult);
 
                 var tableFactory = new BlockAllocationTableFactory(dataReader, header);
                 tableFactory.BeginCreate(machine.CompletionCallback, null);
                 yield return CompletionPort.SingleOperation;
-                blockAllocationTable = TryCatch<BlockAllocationTable>(tableFactory.EndCreate, machine.CompletionResult);
+                blockAllocationTable = TryCatch<BlockAllocationTable>(tableFactory.EndCreate, disposer, machine.CompletionResult);
 
                 if (footer.DiskType == DiskType.Differencing)
                 {
@@ -134,7 +203,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
 
                     BeginCreate(parentPath, machine.CompletionCallback, null);
                     yield return CompletionPort.SingleOperation;
-                    parent = EndCreate(machine.CompletionResult);
+                    parent = TryCatch<VhdFile>(EndCreate, disposer, machine.CompletionResult);
                 }
             }
             machine.ParameterValue =  new VhdFile(footer, header, blockAllocationTable, parent, streamSource.Stream);

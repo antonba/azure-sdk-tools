@@ -171,12 +171,6 @@
   <data name="AzureEmulatorRegistryKey" xml:space="preserve">
     <value>SOFTWARE\Microsoft\Windows Azure Emulator</value>
   </data>
-  <data name="AzureHostNameSuffix" xml:space="preserve">
-    <value>.azurewebsites.net</value>
-  </data>
-  <data name="AzureHostNameSuffixEnv" xml:space="preserve">
-    <value>AZURE_HOSTNAME_SUFFIX</value>
-  </data>
   <data name="AzurePortalUrl" xml:space="preserve">
     <value>https://manage.windowsazure.com</value>
   </data>
@@ -468,10 +462,10 @@
   <data name="GetStorageKeysHeader" xml:space="preserve">
     <value>Name{0}Primary Key{0}Seconday Key</value>
   </data>
-  <data name="GlobalComponents_Load_PublishSettingsNotFound" xml:space="preserve">
+  <data name="GlobalSettingsManager_Load_PublishSettingsNotFound" xml:space="preserve">
     <value>Could not find publish settings. Please run Import-AzurePublishSettingsFile.</value>
   </data>
-  <data name="GlobalComponents_Load_PublishSettingsNotFound1" xml:space="preserve">
+  <data name="GlobalSettingsManager_Load_PublishSettingsNotFound1" xml:space="preserve">
     <value>Could not find publish settings. Please run Import-AzurePublishSettingsFile.</value>
   </data>
   <data name="IISNodeDll" xml:space="preserve">
@@ -531,16 +525,10 @@
   <data name="InvalidDnsName" xml:space="preserve">
     <value>"{0}" is an invalid DNS name for {1}</value>
   </data>
-  <data name="InvalidDnsName1" xml:space="preserve">
-    <value>"{0}" is an invalid DNS name for {1}</value>
-  </data>
   <data name="InvalidEndpoint" xml:space="preserve">
     <value>Invalid service endpoint.</value>
   </data>
   <data name="InvalidFileExtension" xml:space="preserve">
-    <value>The provided file in {0} must be have {1} extension</value>
-  </data>
-  <data name="InvalidFileExtension1" xml:space="preserve">
     <value>The provided file in {0} must be have {1} extension</value>
   </data>
   <data name="InvalidFileName" xml:space="preserve">
@@ -559,9 +547,6 @@
     <value>Value cannot be null. Parameter name: '{0}'</value>
   </data>
   <data name="InvalidOrEmptyArgumentMessage" xml:space="preserve">
-    <value>{0} is invalid or empty</value>
-  </data>
-  <data name="InvalidOrEmptyArgumentMessage1" xml:space="preserve">
     <value>{0} is invalid or empty</value>
   </data>
   <data name="InvalidPackagePath" xml:space="preserve">
@@ -803,13 +788,7 @@ use and privacy statement at {0} and (c) agree to sharing my contact information
   <data name="PathDoesNotExist" xml:space="preserve">
     <value>Path {0} doesn't exist.</value>
   </data>
-  <data name="PathDoesNotExist1" xml:space="preserve">
-    <value>Path {0} doesn't exist.</value>
-  </data>
   <data name="PathDoesNotExistForElement" xml:space="preserve">
-    <value>Path for {0} doesn't exist in {1}.</value>
-  </data>
-  <data name="PathDoesNotExistForElement1" xml:space="preserve">
     <value>Path for {0} doesn't exist in {1}.</value>
   </data>
   <data name="PHPDefaultRuntimeVersion" xml:space="preserve">
@@ -878,32 +857,17 @@ use and privacy statement at {0} and (c) agree to sharing my contact information
   <data name="PublishSettings" xml:space="preserve">
     <value>publish settings</value>
   </data>
-  <data name="PublishSettings1" xml:space="preserve">
-    <value>publish settings</value>
-  </data>
   <data name="PublishSettingsElementName" xml:space="preserve">
     <value>Azure</value>
   </data>
   <data name="PublishSettingsFileExtention" xml:space="preserve">
     <value>.PublishSettings</value>
   </data>
-  <data name="PublishSettingsFileExtention1" xml:space="preserve">
-    <value>.PublishSettings</value>
-  </data>
   <data name="PublishSettingsFileName" xml:space="preserve">
     <value>publishSettings.xml</value>
   </data>
-  <data name="PublishSettingsFileName1" xml:space="preserve">
-    <value>Azure.PublishSettings</value>
-  </data>
   <data name="PublishSettingsSetSuccessfully" xml:space="preserve">
     <value>Publish settings imported</value>
-  </data>
-  <data name="PublishSettingsUrl" xml:space="preserve">
-    <value>https://windows.azure.com/download/publishprofile.aspx?client=nodejs&amp;lang=en</value>
-  </data>
-  <data name="PublishSettingsUrl1" xml:space="preserve">
-    <value>https://windows.azure.com/download/publishprofile.aspx?client=nodejs&amp;lang=en</value>
   </data>
   <data name="PublishSettingsUrlEnv" xml:space="preserve">
     <value>AZURE_PUBLISHINGPROFILE_URL</value>
@@ -1200,9 +1164,6 @@ use and privacy statement at &lt;url&gt; and (c) agree to sharing my contact inf
   <data name="x86InProgramFiles" xml:space="preserve">
     <value> (x86)</value>
   </data>
-  <data name="x86InProgramFiles1" xml:space="preserve">
-    <value> (x86)</value>
-  </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
@@ -1235,9 +1196,6 @@ Launch portal now?</value>
   </data>
   <data name="InvalidHostnameValidation" xml:space="preserve">
     <value>The specified hostname does not exist. Please specify a valid hostname for the site.</value>
-  </data>
-  <data name="InvalidOrEmptyArgumentMessage2" xml:space="preserve">
-    <value>{0} is invalid or empty</value>
   </data>
   <data name="InvalidWebsite" xml:space="preserve">
     <value>The website {0} was not found. Please specify a valid website name.</value>
@@ -1296,7 +1254,25 @@ Please follow these steps in the portal:
   <data name="AccessDeniedExceptionMessage" xml:space="preserve">
     <value>The remote server returned an error: (401) Unauthorized.</value>
   </data>
+  <data name="RealmFormat" xml:space="preserve">
+    <value>&amp;whr={0}</value>
+  </data>
+  <data name="EnvironmentNotFound" xml:space="preserve">
+    <value>The environment name '{0}' is not found.</value>
+  </data>
+  <data name="ServiceManagementExecuteClientActionBeginOperation" xml:space="preserve">
+    <value>Begin Operation: {0}</value>
+  </data>
+  <data name="ServiceManagementExecuteClientActionCompletedOperation" xml:space="preserve">
+    <value>Completed Operation: {0}</value>
+  </data>
+  <data name="ServiceManagementExecuteClientActionInOCSBeginOperation" xml:space="preserve">
+    <value>Begin Operation: {0}</value>
+  </data>
+  <data name="ServiceManagementExecuteClientActionInOCSCompletedOperation" xml:space="preserve">
+    <value>Completed Operation: {0}</value>
+  </data>
   <data name="RuntimeVersionInstalled" xml:space="preserve">
-    <value>5.3.24</value>
+    <value>RUNTIMEVERSIONINSTALLED</value>
   </data>
 </root>

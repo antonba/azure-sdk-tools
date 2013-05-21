@@ -49,10 +49,14 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
             var footerSerializer = new VhdFooterSerializer(footer);
             var byteArray = footerSerializer.ToByteArray();
 
-            var reader = new VhdDataReader(new BinaryReader(new MemoryStream(byteArray)));
-            var footerFactory = new VhdFooterFactory(reader);
-            var vhdFooter = footerFactory.CreateFooter();
-            return vhdFooter;
+            using(var memoryStream = new MemoryStream(byteArray))
+            {
+                var binaryReader = new BinaryReader(memoryStream);
+                var vhdDataReader = new VhdDataReader(binaryReader);
+                var footerFactory = new VhdFooterFactory(vhdDataReader);
+                var vhdFooter = footerFactory.CreateFooter();
+                return vhdFooter;
+            }
         }
 
         private readonly VhdDataReader dataReader;

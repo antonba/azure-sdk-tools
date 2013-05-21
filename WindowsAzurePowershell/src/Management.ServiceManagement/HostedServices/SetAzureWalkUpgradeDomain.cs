@@ -15,7 +15,7 @@
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 {
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using WindowsAzure.ServiceManagement;
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
         }
 
         [Parameter(Position = 1, Mandatory = true, ValueFromPipelineByPropertyName = true, HelpMessage = "Deployment slot. Staging | Production")]
-        [ValidateSet("Staging", "Production", IgnoreCase = true)]
+        [ValidateSet(DeploymentSlotType.Staging, DeploymentSlotType.Production, IgnoreCase = true)]
         public string Slot
         {
             get;
@@ -59,7 +59,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 
         internal void ExecuteCommand()
         {
-            var walkUpgradeDomain = new WalkUpgradeDomainInput()
+            var walkUpgradeDomain = new WalkUpgradeDomainInput
             {
                 UpgradeDomain = this.DomainNumber
             };

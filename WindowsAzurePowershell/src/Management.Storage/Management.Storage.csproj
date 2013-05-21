@@ -102,9 +102,9 @@
     <Compile Include="Common\StorageExceptionUtil.cs" />
     <Compile Include="Common\StorageNouns.cs" />
     <Compile Include="Model\Contract\IStorageQueueManagement.cs" />
+    <Compile Include="Model\Contract\IStorageTableManagement.cs" />
     <Compile Include="Model\Contract\StorageQueueManagement.cs" />
     <Compile Include="Model\ResourceModel\AzureStorageQueue.cs" />
-    <Compile Include="Model\Contract\IStorageTableManagement.cs" />
     <Compile Include="Model\Contract\StorageTableManagement.cs" />
     <Compile Include="Model\ResourceModel\AzureStorageTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

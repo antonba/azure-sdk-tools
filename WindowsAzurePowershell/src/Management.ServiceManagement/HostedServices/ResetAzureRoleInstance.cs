@@ -18,8 +18,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
     using System;
     using System.Management.Automation;
     using System.ServiceModel;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     /// <summary>
     /// Requests a reboot/reimage of a single role instance or for all role instances of a role.
@@ -46,7 +47,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 
         [Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true, HelpMessage = "Slot of the deployment.")]
         [ValidateNotNullOrEmpty]
-        [ValidateSet("staging", "production", IgnoreCase = true)]
+        [ValidateSet(DeploymentSlotType.Staging, DeploymentSlotType.Production, IgnoreCase = true)]
         public string Slot
         {
             get;
@@ -117,7 +118,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
             if (Reboot && Reimage)
             {
                 ThrowTerminatingError(new ErrorRecord(
-                    new ArgumentException("Reboot and Reimage parameters are mutually exclusive."),
+                    new ArgumentException(Resources.RebootAndReImageAreMutuallyExclusive),
                     string.Empty,
                     ErrorCategory.InvalidData,
                     null));
@@ -125,7 +126,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
             else if (!Reboot && !Reimage)
             {
                 ThrowTerminatingError(new ErrorRecord(
-                    new ArgumentException("Reboot or Reimage parameters should be specified."),
+                    new ArgumentException(Resources.RebootOrReImageAreMissing),
                     string.Empty,
                     ErrorCategory.InvalidData,
                     null));

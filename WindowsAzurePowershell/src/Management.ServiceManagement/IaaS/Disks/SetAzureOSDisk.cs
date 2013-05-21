@@ -17,8 +17,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 {
     using System;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Set, "AzureOSDisk"), OutputType(typeof(IPersistentVM))]
     public class SetAzureOSDiskCommand : VirtualMachineConfigurationCmdletBase
@@ -39,7 +40,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             {
                 ThrowTerminatingError(
                     new ErrorRecord(
-                            new InvalidOperationException("An OSDisk has not been defined for this VM. Use New-OSDisk to assign a new OS disk."),
+                            new InvalidOperationException(Resources.OSDiskNotDefinedForVM),
                             string.Empty,
                             ErrorCategory.InvalidData,
                             null));

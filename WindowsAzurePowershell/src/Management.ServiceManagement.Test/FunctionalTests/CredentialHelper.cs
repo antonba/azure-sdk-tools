@@ -33,12 +33,15 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
         private static string TestEnvironmentVariable = "AZURE_TEST_ENVIRONMENT";
         private static string StorageAccountVariable = "AZURE_STORAGE_ACCOUNT";
         private static string StorageAccountKeyVariable = "AZURE_STORAGE_ACCESS_KEY";
+        private static string DefaultStorageAccountVariable = "AZURERT_DEFAULT_STORAGE_ACCOUNT";
+        private static string DefaultLocationVariable = "AZURERT_DEFAULT_LOCATION";
         private static string CredentialBlobUriFormat = "https://{0}.blob.core.windows.net";
         public static string CredentialImportFormat = "Import-AzurePublishSettingsFile '{0}'";
         
         private static string publishSettingsFile = null;
         private static string defaultSubscriptionName = null;
-        private static string location = "West US";
+        private static string location = null;
+        private static string defaultStorageName = null;
         private static CloudBlobContainer blobContainer;
 
         private static string downloadDirectoryPath = null;
@@ -61,6 +64,18 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             DownloadTestCredentials(testEnvironment, downloadDirectoryPath, 
                 string.Format(CredentialBlobUriFormat, storageAccount),
                 storageAccount, storageAccountKey);
+
+            if (environment.ContainsKey(DefaultStorageAccountVariable))
+            {
+                string.Format("Default storage account name define is {0}", DefaultStorageAccountVariable);
+                defaultStorageName = environment[DefaultStorageAccountVariable];
+            }
+
+            if(environment.ContainsKey(DefaultLocationVariable))
+            {
+                string.Format("Default location defindde is {0}", DefaultLocationVariable);
+                location = environment[DefaultLocationVariable];
+            }
 
             publishSettingsFile = Path.Combine(downloadDirectoryPath, defaultCredentialFile);
             Assert.IsTrue(File.Exists(publishSettingsFile), string.Format("Did not download file {0}", publishSettingsFile));
@@ -106,6 +121,14 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                     {
                         defaultSubscriptionName = Resource.DefaultSubscriptionName;
                     }
+                    if (!string.IsNullOrWhiteSpace(Resource.Location))
+                    {
+                        location = Resource.Location;
+                    }
+                    if (!string.IsNullOrWhiteSpace(Resource.DefaultStorageAccountName))
+                    {
+                        defaultStorageName = Resource.DefaultStorageAccountName;
+                    }
                     break;
 
                 case "UseDefaultsandOverride":
@@ -118,6 +141,14 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                     if (!string.IsNullOrWhiteSpace(Resource.DefaultSubscriptionName))
                     {
                         CredentialHelper.DefaultSubscriptionName = Resource.DefaultSubscriptionName;
+                    }
+                    if (!string.IsNullOrWhiteSpace(Resource.Location))
+                    {
+                        CredentialHelper.Location = Resource.Location;
+                    }
+                    if (!string.IsNullOrWhiteSpace(Resource.DefaultStorageAccountName))
+                    {
+                        CredentialHelper.defaultStorageName = Resource.DefaultStorageAccountName;
                     }
 
                     break;
@@ -164,6 +195,19 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 location = value;
             }
         }
+
+        public static string DefaultStorageName
+        {
+            get
+            {
+                return defaultStorageName;
+            }
+            set
+            {
+                defaultStorageName = value;
+            }
+        }
+
 
     }
 }

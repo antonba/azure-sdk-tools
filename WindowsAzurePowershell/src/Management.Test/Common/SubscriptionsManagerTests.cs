@@ -77,12 +77,12 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
         {
             for (var i = 0; i < Data.ValidPublishSettings.Count; i++)
             {
-                var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings[i]);
+                var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings[i]);
                 
                 var subscriptionsManager = SubscriptionsManager.Import(
                     Data.ValidSubscriptionsData[i],
-                    globalComponents.PublishSettings,
-                    globalComponents.Certificate);
+                    globalSettingsManager.PublishSettings,
+                    globalSettingsManager.Certificate);
 
                 var newSubscription = new SubscriptionData
                 {
@@ -96,15 +96,15 @@ namespace Microsoft.WindowsAzure.Management.Test.Common
 
                 var newSubscriptionsManager = SubscriptionsManager.Import(
                     Path.Combine(GlobalPathInfo.GlobalSettingsDirectory, "test.xml"),
-                    globalComponents.PublishSettings,
-                    globalComponents.Certificate);
+                    globalSettingsManager.PublishSettings,
+                    globalSettingsManager.Certificate);
 
                 var addedSubscription = newSubscriptionsManager.Subscriptions.Values.Single(
                     subscription => subscription.SubscriptionName == newSubscription.SubscriptionName);
 
                 Assert.AreEqual(newSubscription.SubscriptionId, addedSubscription.SubscriptionId);
 
-                globalComponents.DeleteGlobalComponents();
+                globalSettingsManager.DeleteGlobalSettingsManager();
             }
         }
     }

@@ -12,7 +12,7 @@
 ModuleToProcess = '.\Microsoft.WindowsAzure.Management.dll'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '0.6.14'
 
 # ID used to uniquely identify this module
 GUID = '81d522a4-6e5d-4105-8f58-376204c47458'

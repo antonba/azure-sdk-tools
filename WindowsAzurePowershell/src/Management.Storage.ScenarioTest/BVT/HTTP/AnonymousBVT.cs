@@ -29,9 +29,11 @@ namespace Management.Storage.ScenarioTest.BVT.HTTP
         public static void AnonymousHTTPBVTClassInitialize(TestContext testContext)
         {
             TestBase.TestClassInitialize(testContext);
-            string StorageAccountName = Test.Data.Get("StorageAccountName");
+            CLICommonBVT.SaveAndCleanSubScriptionAndEnvConnectionString();
+            StorageAccountName = Test.Data.Get("StorageAccountName");
+            StorageEndPoint = Test.Data.Get("StorageEndPoint").Trim();
             useHttps = false;
-            PowerShellAgent.SetAnonymousStorageContext(StorageAccountName, useHttps);
+            PowerShellAgent.SetAnonymousStorageContext(StorageAccountName, useHttps, StorageEndPoint);
             downloadDirRoot = Test.Data.Get("DownloadDir");
             SetupDownloadDir();
         }

@@ -12,17 +12,17 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using System.Net;
-
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 {
     using System;
+    using System.Net;
     using System.IO;
     using System.Management.Automation;
     using System.ServiceModel;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using Utilities.Common;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Get, "AzureVNetConfig"), OutputType(typeof(VirtualNetworkConfigContext))]
     public class GetAzureVNetConfigCommand : ServiceManagementBaseCmdlet
@@ -52,12 +52,12 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             {
                 try
                 {
-                    WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.AzureVNetConfigBeginOperation, CommandRuntime.ToString()));
 
                     var netConfigStream = this.RetryCall(s => this.Channel.GetNetworkConfiguration(s)) as Stream;
                     Operation operation = GetOperation();
 
-                    WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.AzureVNetConfigCompletedOperation, CommandRuntime.ToString()));
 
                     if (netConfigStream != null)
                     {
@@ -111,7 +111,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
         {
             if (!string.IsNullOrEmpty(this.ExportToFile) && !Directory.Exists(Path.GetDirectoryName(this.ExportToFile)))
             {
-                throw new ArgumentException("The directory specified to export the network configuration does not exist.");
+                throw new ArgumentException(Resources.NetworkConfigurationDirectoryDoesNotExist);
             }
         }
     }

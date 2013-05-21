@@ -29,6 +29,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
     [TestClass]
     public class AddAzureVhdSASUriTest : AzureVhdTest
     {
+        string containerName = "vhdstore";
 
         [TestInitialize]
         public void Initialize()
@@ -40,32 +41,19 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 Assert.Inconclusive("No Subscription is selected!");
             }
 
-            pass = true;
+            ReImportSubscription();
+            pass = false;
             testStartTime = DateTime.Now;            
             storageAccountKey = vmPowershellCmdlets.GetAzureStorageAccountKey(defaultAzureSubscription.CurrentStorageAccount);
-              
-            // Remove all subscriptions.  SAS Uri should work without a subscription.
+
             try
             {
-                vmPowershellCmdlets.RunPSScript("Get-AzureSubscription | Remove-AzureSubscription -Force");
+                vmPowershellCmdlets.RunPSScript("Get-AzureStorageContainer -Name " + containerName);
             }
             catch
             {
-                Console.WriteLine("Subscriptions cannot be removed");
-            }
-
-            // Check if all subscriptions are removed.
-            try
-            {
-                vmPowershellCmdlets.GetAzureSubscription();
-                Assert.Fail("Subscription was not removed!");
-            }
-            catch (Exception e)
-            {
-                if(e is AssertFailedException)
-                {
-                    throw;
-                }
+                // Create a container.
+                vmPowershellCmdlets.RunPSScript("New-AzureStorageContainer -Name " + containerName);
             }
         }
 
@@ -94,7 +82,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", vhdName, destinationSasUri2);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2);
+                    ReImportSubscription();
                     Console.WriteLine("Finished uploading: {0}", destinationSasUri2);
 
                     // Verify the upload.
@@ -128,14 +118,15 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
 
             System.IO.File.AppendAllLines(perfFile, new string[] { String.Format("{0} {1},{2}", testName, vhdName, (testEndTime - testStartTime).TotalSeconds) });
+            pass = true;
         }
 
         private string CreateSasUriWithPermission(string vhdName, int p)
         {
             // Set the destination
             string vhdBlobName = string.Format("vhdstore/{0}.vhd", Utilities.GetUniqueShortName(Path.GetFileNameWithoutExtension(vhdName)));
-            string vhdDestUri = blobUrlRoot + vhdBlobName;
-
+            string httpsBlobUrlRoot = string.Format("https:{0}", blobUrlRoot.Substring(blobUrlRoot.IndexOf('/')));
+            string vhdDestUri = httpsBlobUrlRoot + vhdBlobName;
 
             var destinationBlob2 = new CloudPageBlob(new Uri(vhdDestUri), new StorageCredentials(storageAccountKey.StorageAccountName, storageAccountKey.Primary));
             var policy2 = new SharedAccessBlobPolicy()
@@ -174,8 +165,11 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", vhdName, destinationSasUri2);
+
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2);
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2, true);
+                    ReImportSubscription();
                     Console.WriteLine("Finished uploading: {0}", destinationSasUri2);
 
                     // Verify the upload.
@@ -205,6 +199,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             }
 
             DateTime testEndTime = DateTime.Now;
+            pass = true;
             Console.WriteLine("{0} test passed at {1}.", testName, testEndTime);
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
 
@@ -237,8 +232,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", vhdName, destinationSasUri2);
-                    //vmPowershellCmdlets.AddAzureVhd(new AddAzureVhdCmdletInfo(destinationSasUri2, vhdLocalPath.FullName));
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2, true);
+                    ReImportSubscription();
                     Console.WriteLine("Finished uploading: {0}", destinationSasUri2);
 
                     // Verify the upload.
@@ -272,6 +268,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
 
             System.IO.File.AppendAllLines(perfFile, new string[] { String.Format("{0},{1}", testName, (testEndTime - testStartTime).TotalSeconds) });
+            pass = true;
         }
 
         /// <summary>
@@ -298,6 +295,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", vhdName, destinationSasUri2);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2);
 
                     try
@@ -313,6 +311,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                     }
 
                     // Verify the upload.
+                    ReImportSubscription();
                     AssertUploadContextAndContentMD5UsingSaveVhd(destinationSasUri2, vhdLocalPath, vhdUploadContext, md5hash);
                     Console.WriteLine("Test success with permission: {0}", i);
                 }
@@ -331,6 +330,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 }
             }
 
+            pass = true;
             DateTime testEndTime = DateTime.Now;
             Console.WriteLine("{0} test passed at {1}.", testName, testEndTime);
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
@@ -363,7 +363,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", vhdName, destinationSasUri2);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2, 16);
+                    ReImportSubscription();
                     Console.WriteLine("uploading completed: {0}", vhdName);
 
                     // Verify the upload.
@@ -397,6 +399,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
 
             System.IO.File.AppendAllLines(perfFile, new string[] { String.Format("{0},{1}", testName, (testEndTime - testStartTime).TotalSeconds) });
+            pass = true;
         }
 
         /// <summary>
@@ -424,12 +427,14 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", vhdName, destinationSasUri2);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2);
                     Console.WriteLine("uploaded: {0}", vhdName); 
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(vhdLocalPath, destinationSasUri2, 16, true);
                     Console.WriteLine("uploading overwrite completed: {0}", vhdName);
 
                     // Verify the upload.
+                    ReImportSubscription();
                     AssertUploadContextAndContentMD5UsingSaveVhd(destinationSasUri2, vhdLocalPath, vhdUploadContext, md5hash);
                     Console.WriteLine("Test success with permission: {0}", i);
                 }
@@ -448,6 +453,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 }
             }
 
+            pass = true;
             DateTime testEndTime = DateTime.Now;
             Console.WriteLine("{0} test passed at {1}.", testName, testEndTime);
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
@@ -487,18 +493,22 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 try
                 {
                     Console.WriteLine("uploads {0} to {1}", baseVhdName, destinationSasUri2);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(baseVhdLocalPath, destinationSasUri2, true);
                     Console.WriteLine("uploading completed: {0}", baseVhdName);
 
                     // Verify the upload.
+                    ReImportSubscription();
                     AssertUploadContextAndContentMD5UsingSaveVhd(destinationSasUri2, baseVhdLocalPath, vhdUploadContext, md5hashBase, false);
 
 
                     Console.WriteLine("uploads {0} to {1}", childVhdName, destinationSasUri3);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var patchVhdUploadContext = vmPowershellCmdlets.AddAzureVhd(childVhdLocalPath, destinationSasUri3, destinationSasUri2);
                     Console.WriteLine("uploading completed: {0}", childVhdName);
 
                     // Verify the upload.
+                    ReImportSubscription();
                     AssertUploadContextAndContentMD5UsingSaveVhd(destinationSasUri3, childVhdLocalPath, patchVhdUploadContext, md5hash);
                     Console.WriteLine("Test success with permission: {0}", i);
                 }
@@ -510,6 +520,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 }
             }
 
+            pass = true;
             DateTime testEndTime = DateTime.Now;
             Console.WriteLine("{0} test passed at {1}.", testName, testEndTime);
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
@@ -617,10 +628,12 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 {
                     // Upload the parent vhd using Sas Uri
                     Console.WriteLine("uploads {0} to {1}", baseVhdName, destinationSasUriParent);
+                    vmPowershellCmdlets.RemoveAzureSubscriptions();
                     var vhdUploadContext = vmPowershellCmdlets.AddAzureVhd(baseVhdLocalPath, destinationSasUriParent, true);
                     Console.WriteLine("uploading completed: {0}", baseVhdName);
 
                     // Verify the upload.
+                    ReImportSubscription();
                     AssertUploadContextAndContentMD5UsingSaveVhd(destinationSasUriParent, baseVhdLocalPath, vhdUploadContext, md5hashBase, false);
 
                     Console.WriteLine("uploads {0} to {1} with patching from {2}", childVhdName, vhdDestUri, destinationSasUriParent);
@@ -648,6 +661,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 }
             }
 
+            pass = true;
             DateTime testEndTime = DateTime.Now;
             Console.WriteLine("{0} test passed at {1}.", testName, testEndTime);
             Console.WriteLine("Duration of the test pass: {0} seconds", (testEndTime - testStartTime).TotalSeconds);
@@ -655,42 +669,11 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             System.IO.File.AppendAllLines(perfFile, new string[] { String.Format("{0},{1}", testName, (testEndTime - testStartTime).TotalSeconds) });
         }
 
-        //private void AssertUploadContextAndContentMD5UsingSaveVhd(string destination, FileInfo localFile, VhdUploadContext vhdUploadContext, string md5hash, bool deleteBlob = true, bool deleteLocal = true)
-        //{
-        //    AssertUploadContext(destination, localFile, vhdUploadContext);
-
-        //    FileInfo downloadFile = new FileInfo(localFile.FullName + "_download.vhd");            
-           
-        //    BlobHandle blobHandle = getBlobHandle(destination);
-
-        //    Assert.IsTrue(VerifyMD5hash(blobHandle, md5hash));
-        //    SaveVhdAndAssertContent(blobHandle, downloadFile, true, deleteBlob, deleteLocal);            
-        //}
-
-        //private BlobHandle getBlobHandle(string blob)
-        //{
-        //    BlobUri blobPath;
-        //    Assert.IsTrue(BlobUri.TryParseUri(new Uri(blob), out blobPath));
-        //    return new BlobHandle(blobPath, storageAccountKey.Primary);
-        //}
-
-
-        //private void AssertUploadContext(string destination, FileInfo localFile, VhdUploadContext vhdUploadContext)
-        //{
-        //    Assert.IsNotNull(vhdUploadContext);
-        //    Assert.AreEqual(new Uri(destination), vhdUploadContext.DestinationUri);
-        //    Assert.AreEqual(vhdUploadContext.LocalFilePath.FullName, localFile.FullName);            
-        //}
-
         [TestCleanup]
         public virtual void CleanUp()
         {
             Console.WriteLine("Test {0}", pass ? "passed" : "failed");
-
-            // Re-import the subscription.
-            vmPowershellCmdlets.ImportAzurePublishSettingsFile();
-            vmPowershellCmdlets.SetDefaultAzureSubscription(Resource.DefaultSubscriptionName);
-            vmPowershellCmdlets.SetAzureSubscription(defaultAzureSubscription.SubscriptionName, defaultAzureSubscription.CurrentStorageAccount);                                            
+            ReImportSubscription();
         }
     }
 }

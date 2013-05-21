@@ -20,6 +20,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
     using System.Xml.Serialization;
     using Model;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     public static class PersistentVMHelper
     {
@@ -27,7 +28,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
         {
             if (role == null)
             {
-                throw new ArgumentNullException("role", "Role cannot be null");
+                throw new ArgumentNullException("role", Resources.MissingPersistentVMRole);
             }
             
             XmlAttributeOverrides overrides = new XmlAttributeOverrides();
@@ -48,7 +49,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
         {
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("The file to load the role does not exist", "filePath");
+                throw new ArgumentException(Resources.MissingPersistentVMFile, "filePath");
             }
 
             XmlAttributeOverrides overrides = new XmlAttributeOverrides();

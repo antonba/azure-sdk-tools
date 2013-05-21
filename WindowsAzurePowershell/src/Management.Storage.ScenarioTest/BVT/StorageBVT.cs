@@ -125,25 +125,17 @@ namespace Management.Storage.ScenarioTest.BVT
         /// </summary>
         private static void GenerateBvtTempFiles()
         {
-            CommonBlockFilePath = Test.Data.Get("BlockFilePath");
-            CommonPageFilePath = Test.Data.Get("PageFilePath");
-            string downloadDir = Test.Data.Get("DownloadDirPath");
+            CommonBlockFilePath = Path.Combine(Test.Data.Get("TempDir"), FileUtil.GetSpecialFileName());
+            CommonPageFilePath = Path.Combine(Test.Data.Get("TempDir"), FileUtil.GetSpecialFileName());
+            string downloadDir = Test.Data.Get("DownloadDir");
 
-            CreateDirIfNotExits(Path.GetDirectoryName(CommonBlockFilePath));
-            CreateDirIfNotExits(Path.GetDirectoryName(CommonPageFilePath));
-            CreateDirIfNotExits(downloadDir);
+            FileUtil.CreateDirIfNotExits(Path.GetDirectoryName(CommonBlockFilePath));
+            FileUtil.CreateDirIfNotExits(Path.GetDirectoryName(CommonPageFilePath));
+            FileUtil.CreateDirIfNotExits(downloadDir);
 
             // Generate block file and page file which are used for uploading
             Helper.GenerateMediumFile(CommonBlockFilePath, 1);
             Helper.GenerateMediumFile(CommonPageFilePath, 1);
-        }
-
-        private static void CreateDirIfNotExits(string dirPath)
-        {
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
         }
 
         /// <summary>
@@ -287,7 +279,7 @@ namespace Management.Storage.ScenarioTest.BVT
         [TestCategory(Category.Storage)]
         public void DownloadBlobTest()
         {
-            string downloadDirPath = Test.Data.Get("DownloadDirPath");
+            string downloadDirPath = Test.Data.Get("DownloadDir");
             DownloadBlobTest(new PowerShellAgent(), CommonBlockFilePath, downloadDirPath, Microsoft.WindowsAzure.Storage.Blob.BlobType.BlockBlob);
             DownloadBlobTest(new PowerShellAgent(), CommonPageFilePath, downloadDirPath, Microsoft.WindowsAzure.Storage.Blob.BlobType.PageBlob);
         }

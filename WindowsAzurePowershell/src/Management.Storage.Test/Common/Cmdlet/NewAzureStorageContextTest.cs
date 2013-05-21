@@ -96,5 +96,51 @@ namespace Microsoft.WindowsAzure.Management.Storage.Test.Common.Cmdlet
         {
             AssertThrows<ArgumentException>(() => command.ExecuteCmdlet(), Resources.DefaultStorageCredentialsNotFound);
         }
+
+        [TestMethod]
+        public void GetDefaultEndPointDomainTest()
+        {
+            Assert.AreEqual(command.GetDefaultEndPointDomain(), Resources.DefaultStorageEndPointDomain);
+        }
+
+        [TestMethod]
+        public void GetStorageDomainFromEndPointTest()
+        {
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://myaccount.blob.core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://myaccount.table.core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://myaccount.queue.core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://blob.core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://table.core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://queue.core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://core.windows.net"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("core.windows.net"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("  core.windows.net   "), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("core.windows.net/"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("core.abc"), "abc");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("abc.blob.core.chinacloudapi.cn"), "chinacloudapi.cn");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("https://abc.blob.core.chinacloudapi.cn/container/blob"), "chinacloudapi.cn");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("https://abc.blob.core.chinacloudapi.cn:8010/container/blob"), "chinacloudapi.cn:8010");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("abc.blob.core.chinacloudapi.cn:8010"), "chinacloudapi.cn:8010");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("abc.blob.core.chinacloudapi.cn:8010/contianer/abc.txt"), "chinacloudapi.cn:8010");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://core.chinacloudapi.cn"), "chinacloudapi.cn");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://abccore.blob.core.windows.net"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("http://abccore.blob.cOrE.windOWS.Net"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("abccore.blob.core.windows.net"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("ftp://abccore.blob.core.windows.net"), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("ftp://abccore.blob.core.windows.net  "), "windows.net");
+            Assert.AreEqual(command.GetStorageDomainFromEndPoint("unknown://abccore.blob.core.windows.net  "), "windows.net");
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint("http://www.bing.com"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint("windows.net"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(""));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint("core."));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(@"C:\windows\core.abc\etc"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(@"C:/windows/core.abc/etc"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(@"file:///core.abc/etc"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(@"ftp://bing.com"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(@"unknown://bing.com"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint(null));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint("http://127.0.0.1"));
+            AssertThrows<ArgumentException>(() => command.GetStorageDomainFromEndPoint("http://127.0.0.1/account/table"));
+        }
     }
 }

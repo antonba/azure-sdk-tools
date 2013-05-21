@@ -57,16 +57,12 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
         {
             if (KeyPair.IsPresent)
             {
-                LinuxProvisioningConfigurationSet.SSHKeyPair keypair = new LinuxProvisioningConfigurationSet.SSHKeyPair();
-                keypair.Fingerprint = Fingerprint;
-                keypair.Path = Path;
+                var keypair = new LinuxProvisioningConfigurationSet.SSHKeyPair {Fingerprint = Fingerprint, Path = Path};
                 WriteObject(keypair, true);
             }
             else
             {
-                LinuxProvisioningConfigurationSet.SSHPublicKey keypair = new LinuxProvisioningConfigurationSet.SSHPublicKey();
-                keypair.Fingerprint = Fingerprint;
-                keypair.Path = Path;
+                var keypair = new LinuxProvisioningConfigurationSet.SSHPublicKey {Fingerprint = Fingerprint, Path = Path};
                 WriteObject(keypair, true);
             }
         }

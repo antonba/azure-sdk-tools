@@ -19,7 +19,8 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Common
     using System.Globalization;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
+    using Properties;
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class ValidateDeploymentUpgradeTypeAttribute : ValidateEnumeratedArgumentsAttribute
@@ -47,7 +48,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Common
             var stringElement = element.ToString();
             if (validValues.FirstOrDefault(s => string.Compare(s, stringElement, true, CultureInfo.InvariantCulture) == 0) == null)
             {
-                var message = string.Format("ValidateSetFailure - Invalid UpgradeType is specified: '{0}', valid values are: '{1}'", stringElement, commaSeparatedUpgradeTypes);
+                var message = string.Format(Resources.InvalidDeploymentUpgradeType, stringElement, commaSeparatedUpgradeTypes);
                 throw new ValidationMetadataException(message);
             }
         }

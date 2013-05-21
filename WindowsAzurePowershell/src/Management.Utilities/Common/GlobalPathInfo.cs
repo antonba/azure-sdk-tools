@@ -21,13 +21,17 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
     public class GlobalPathInfo
     {
         public string PublishSettingsFile { get; private set; }
+
         public string SubscriptionsDataFile { get; private set; }
+
         public string ServiceConfigurationFile { get; private set; }
 
-        public static string AzureAppDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Resources.AzureDirectoryName);
+        public static string AzureAppDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            Resources.AzureDirectoryName);
 
         /// <summary>
-        /// Path to the global settings directory used by GlobalComponents.
+        /// Path to the global settings directory used by GlobalSettingsManager.
         /// </summary>
         private static string _globalSettingsDirectory;
 

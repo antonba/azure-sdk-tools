@@ -177,6 +177,9 @@ namespace Microsoft.WindowsAzure.Management.Storage.Blob
             }
         }
 
+        /// <summary>
+        /// Cmdlet begin processing
+        /// </summary>
         protected override void BeginProcessing()
         {
             if (concurrentTaskCount == 0)
@@ -193,6 +196,9 @@ namespace Microsoft.WindowsAzure.Management.Storage.Blob
             base.BeginProcessing();
         }
 
+        /// <summary>
+        /// Cmdlet end processing
+        /// </summary>
         protected override void EndProcessing()
         {
             WriteVerbose(String.Format(Resources.TransferSummary, TotalCount, FinishedCount, FailedCount));
@@ -200,6 +206,11 @@ namespace Microsoft.WindowsAzure.Management.Storage.Blob
             base.EndProcessing();
         }
 
+        /// <summary>
+        /// Start sync task using transfermanager from datamovement library.
+        /// </summary>
+        /// <param name="taskAction"></param>
+        /// <param name="record"></param>
         protected void StartSyncTaskInTransferManager(Action<BlobTransferManager> taskAction, ProgressRecord record = null)
         {
             finished = false;
@@ -238,13 +249,28 @@ namespace Microsoft.WindowsAzure.Management.Storage.Blob
             }
         }
 
+        /// <summary>
+        /// Dispose DataMovement cmdlet
+        /// </summary>
         public void Dispose()
         {
-            if (transferManager != null)
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// Dispose DataMovement cmdlet
+        /// </summary>
+        /// <param name="disposing">User disposing</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                transferManager.WaitForCompletion();
-                transferManager.Dispose();
-                transferManager = null;
+                if (transferManager != null)
+                {
+                    transferManager.WaitForCompletion();
+                    transferManager.Dispose();
+                    transferManager = null;
+                }
             }
         }
     }

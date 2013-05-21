@@ -58,8 +58,8 @@ namespace Microsoft.WindowsAzure.Management.Utilities.CloudService
 
             if (!string.IsNullOrEmpty(settings.Subscription))
             {
-                GlobalComponents globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory);
-                SubscriptionId = globalComponents.GetSubscriptionId(settings.Subscription);
+                GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory);
+                SubscriptionId = globalSettingsManager.GetSubscriptionId(settings.Subscription);
             }
             else
             {

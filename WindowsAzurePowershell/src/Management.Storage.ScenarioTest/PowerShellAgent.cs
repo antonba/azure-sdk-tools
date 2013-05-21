@@ -120,13 +120,15 @@ namespace Management.Storage.ScenarioTest
             ps.Invoke();
         }
 
-        public static void SetStorageContext(string StorageAccountName, string StorageAccountKey, bool useHttps = true)
+        public static void SetStorageContext(string StorageAccountName, string StorageAccountKey,
+            bool useHttps = true, string endPoint = "")
         {
             PowerShell ps = PowerShell.Create(_InitState);
             ps.AddCommand("New-AzureStorageContext");
             ps.BindParameter("StorageAccountName", StorageAccountName);
             ps.BindParameter("StorageAccountKey", StorageAccountKey);
-            
+            ps.BindParameter("EndPoint", endPoint.Trim());
+
             if (useHttps)
             {
                 //TODO need tests to check whether it's ignore cases.
@@ -161,12 +163,13 @@ namespace Management.Storage.ScenarioTest
             SetStorageContext(ps);
         }
 
-        public static void SetAnonymousStorageContext(string StorageAccountName, bool useHttps)
+        public static void SetAnonymousStorageContext(string StorageAccountName, bool useHttps, string endPoint = "")
         {
             PowerShell ps = PowerShell.Create(_InitState);
             ps.AddCommand("New-AzureStorageContext");
             ps.BindParameter("StorageAccountName", StorageAccountName);
             ps.BindParameter("Anonymous");
+            ps.BindParameter("EndPoint", endPoint.Trim());
 
             if (useHttps)
             {
@@ -247,12 +250,19 @@ namespace Management.Storage.ScenarioTest
             return GetStorageContext(ps.Invoke());
         }
 
-        public override bool NewAzureStorageContext(string StorageAccountName, string StorageAccountKey)
+        public override bool NewAzureStorageContext(string StorageAccountName, string StorageAccountKey, string endPoint = "")
         {
             PowerShell ps = GetPowerShellInstance();
             ps.AddCommand("New-AzureStorageContext");
             ps.BindParameter("StorageAccountName", StorageAccountName);
             ps.BindParameter("StorageAccountKey", StorageAccountKey);
+
+            if (string.IsNullOrEmpty(StorageAccountKey))
+            {
+                ps.BindParameter("Anonymous", true);
+            }
+
+            ps.BindParameter("EndPoint", endPoint);
 
             Test.Info(CmdletLogFormat, MethodBase.GetCurrentMethod().Name, GetCommandLine(ps));
 
@@ -568,6 +578,7 @@ namespace Management.Storage.ScenarioTest
         public override bool GetAzureStorageBlobByPrefix(string Prefix, string ContainerName)
         {
             PowerShell ps = GetPowerShellInstance();
+            AttachPipeline(ps);
             ps.AddCommand("Get-AzureStorageBlob");
             ps.BindParameter("Prefix", Prefix);
             ps.BindParameter("Container", ContainerName);

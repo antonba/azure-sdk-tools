@@ -114,7 +114,6 @@ namespace Microsoft.WindowsAzure.Management.Test.Subscription
             Assert.IsTrue(worked);
         }
 
-
         [TestMethod]
         public void UnregisterProviderReturnsFalseIfAlreadyRegistered()
         {

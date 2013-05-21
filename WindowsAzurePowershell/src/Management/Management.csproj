@@ -183,6 +183,7 @@
     <Compile Include="CloudService\StartAzureService.cs" />
     <Compile Include="CloudService\StopAzureService.cs" />
     <Compile Include="CloudService\TestAzureName.cs" />
+    <Compile Include="Environment\GetAzureEnvironment.cs" />
     <Compile Include="ServiceBus\GetAzureSBLocation.cs" />
     <Compile Include="ServiceBus\GetAzureSBNamespace.cs" />
     <Compile Include="ServiceBus\NewAzureSBNamespace.cs" />
@@ -191,7 +192,7 @@
     <Compile Include="Store\NewAzureStoreAddOn.cs" />
     <Compile Include="Store\RemoveAzureStoreAddOn.cs" />
     <Compile Include="Store\SetAzureStoreAddOn.cs" />
-    <Compile Include="Subscription\GetAzurePublishSettings.cs" />
+    <Compile Include="Subscription\GetAzurePublishSettingsFile.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

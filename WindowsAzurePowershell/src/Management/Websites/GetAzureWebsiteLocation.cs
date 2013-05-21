@@ -16,6 +16,7 @@ namespace Microsoft.WindowsAzure.Management.Websites
 {
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.WindowsAzure.Management.Utilities.Websites;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Common;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Services;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Services.WebEntities;
@@ -26,29 +27,12 @@ namespace Microsoft.WindowsAzure.Management.Websites
     [Cmdlet(VerbsCommon.Get, "AzureWebsiteLocation"), OutputType(typeof(ICollection<string>))]
     public class GetAzureWebsiteLocationCommand : WebsitesBaseCmdlet
     {
-        /// <summary>
-        /// Initializes a new instance of the GetAzureWebsiteLocationCommand class.
-        /// </summary>
-        public GetAzureWebsiteLocationCommand()
-            : this(null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the GetAzureWebsiteLocationCommand class.
-        /// </summary>
-        /// <param name="channel">
-        /// Channel used for communication with Azure's service management APIs.
-        /// </param>
-        public GetAzureWebsiteLocationCommand(IWebsitesServiceManagement channel)
-        {
-            Channel = channel;
-        }
+        public IWebsitesClient WebsitesClient { get; set; }
 
         public override void ExecuteCmdlet()
         {
-            // For now geo regions will be hardcoded since the Get GeoRegions endpoint is still not exposed.
-            WriteObject(AvailableWebspaces.Webspaces.Keys, true);
+            WebsitesClient = WebsitesClient ?? new WebsitesClient(CurrentSubscription, WriteDebug);
+            WriteObject(WebsitesClient.ListAvailableLocations(), true);
         }
     }
 }

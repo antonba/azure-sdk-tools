@@ -17,7 +17,8 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
     using System;
     using System.Linq;
     using System.Security.Cryptography.X509Certificates;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
+    using Properties;
 
     public class WinRmConfigurationBuilder
     {
@@ -44,7 +45,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
             var httpsListener = Configuration.Listeners.FirstOrDefault(l => l.Protocol == Https);
             if (httpsListener == null)
             {
-                throw new ArgumentOutOfRangeException("There is no WinRM Https Listener in ProvisioningConfiguration");
+                throw new ArgumentOutOfRangeException(Resources.MissingWinRMHttpsListener);
             }
 
             return httpsListener.CertificateThumbprint;
@@ -54,7 +55,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
         {
             if (Configuration.Listeners.FirstOrDefault(l=> l.Protocol == Http) != null)
             {
-                throw new ArgumentOutOfRangeException("There is already an WinRM Http Listener in ProvisioningConfiguration");
+                throw new ArgumentOutOfRangeException(Resources.AlreadyExistingWinRMHttpListener);
             }
             var listener = new WindowsProvisioningConfigurationSet.WinRmListenerProperties
             {
@@ -70,7 +71,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
             {
                 if(!certificate.HasPrivateKey)
                 {
-                    throw new ArgumentOutOfRangeException("WinRMCertificate must have private key");
+                    throw new ArgumentOutOfRangeException(Resources.MissingPrivateKeyInWinRMCertificate);
                 }
                 AddHttpsListener(certificate.Thumbprint);
             }
@@ -85,7 +86,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
             var httpsListener = Configuration.Listeners.FirstOrDefault(l => l.Protocol == Https);
             if (httpsListener == null)
             {
-                throw new ArgumentOutOfRangeException("There is no WinRM Https Listener in ProvisioningConfiguration");
+                throw new ArgumentOutOfRangeException(Resources.MissingWinRMHttpsListener);
             }
             httpsListener.CertificateThumbprint = certificate.Thumbprint;
         }
@@ -94,7 +95,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
         {
             if (Configuration.Listeners.FirstOrDefault(l => l.Protocol == Https) != null)
             {
-                throw new ArgumentOutOfRangeException("There is already an WinRM Https Listener in ProvisioningConfiguration");
+                throw new ArgumentOutOfRangeException(Resources.AlreadyExistingWinRMHttpsListener);
             }
             var listener = new WindowsProvisioningConfigurationSet.WinRmListenerProperties
             {
@@ -107,7 +108,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
         {
             if (Configuration.Listeners.FirstOrDefault(l => l.Protocol == Https) != null)
             {
-                throw new ArgumentOutOfRangeException("There is already an WinRM Https Listener in ProvisioningConfiguration");
+                throw new ArgumentOutOfRangeException(Resources.AlreadyExistingWinRMHttpsListener);
             }
             var listener = new WindowsProvisioningConfigurationSet.WinRmListenerProperties
             {

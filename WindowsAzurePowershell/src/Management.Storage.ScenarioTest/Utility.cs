@@ -12,6 +12,8 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -35,6 +37,70 @@ namespace Management.Storage.ScenarioTest
         {
             return prefix + Guid.NewGuid().ToString().Replace("-", "").Substring(0, len);
         }
+
+        /// <summary>
+        /// Generate random base 64 string
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        public static string GenBase64String(string seed = "")
+        {
+            string randomKey = Utility.GenNameString(seed);
+            return Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(randomKey));
+        }
+
+        /// <summary>
+        /// Get Storage End Points
+        /// </summary>
+        /// <param name="storageAccountName">storage account name</param>
+        /// <param name="useHttps">use https</param>
+        /// <returns>A string array. 0 is blob endpoint, 1 is queue endpoint, 2 is table endpoint</returns>
+        public static string[] GetStorageEndPoints(string storageAccountName, bool useHttps, string endPoint = "")
+        {
+            string protocol = "http";
+
+            if (useHttps)
+            {
+                protocol = "https";
+            }
+
+            if (string.IsNullOrEmpty(endPoint))
+            {
+                string configEndPoint = Test.Data.Get("StorageEndPoint");
+                if (string.IsNullOrEmpty(configEndPoint))
+                {
+                    endPoint = "core.windows.net";
+                }
+                else
+                {
+                    endPoint = configEndPoint;
+                }
+            }
+
+            endPoint = endPoint.Trim();
+
+            string[] storageEndPoints = new string[3]
+                {
+                    string.Format("{0}://{1}.blob.{2}/", protocol, storageAccountName, endPoint),
+                    string.Format("{0}://{1}.queue.{2}/", protocol, storageAccountName, endPoint),
+                    string.Format("{0}://{1}.table.{2}/", protocol, storageAccountName, endPoint)
+                };
+            return storageEndPoints;
+        }
+
+        /// <summary>
+        /// Get CloudStorageAccount with specified end point
+        /// </summary>
+        /// <param name="credential">StorageCredentials object</param>
+        /// <param name="useHttps">use https</param>
+        /// <param name="endPoint">end point</param>
+        /// <returns>CloudStorageAccount object</returns>
+        public static CloudStorageAccount GetStorageAccountWithEndPoint(StorageCredentials credential, bool useHttps, string endPoint = "")
+        {
+            string[] endPoints = GetStorageEndPoints(credential.AccountName, useHttps, endPoint);
+            return new CloudStorageAccount(credential, new Uri(endPoints[0]), new Uri(endPoints[1]), new Uri(endPoints[2]));
+        }
+
 
         public static List<string> GenNameLists(string prefix, int count = 1, int len = 8)
         {

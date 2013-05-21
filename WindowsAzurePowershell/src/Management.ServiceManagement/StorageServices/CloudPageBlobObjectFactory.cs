@@ -16,7 +16,6 @@
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.StorageServices
 {
     using System;
-    using Storage.Auth;
     using Storage.Blob;
     using Storage.RetryPolicies;
     using Sync.Download;

@@ -12,8 +12,10 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+
 namespace Microsoft.WindowsAzure.Management.Tools.Common.General
 {
+    using System.Diagnostics.CodeAnalysis;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -376,29 +378,13 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
     public delegate IEnumerable<CompletionPort> MachineEngine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>(AsyncMachine machine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10);
     public delegate IEnumerable<CompletionPort> MachineEngine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>(AsyncMachine machine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, P11 param11);
 
-    /// <summary>
-    /// Interface that allows restoring context (like HttpContext.Current) before each step of async machine.
-    /// </summary>
-    public interface IThreadContextManager
-    {
-        /// <summary>
-        /// Sets up thread context and returns IDisposable object that will revert changes on Dispose. 
-        /// </summary>
-        /// <returns></returns>
-        IDisposable EnterThreadContext();
-
-        /// <summary>
-        /// Sets up thread context without a way to restore it.
-        /// </summary>
-        void SetThreadContext();
-    }
-
     // General purpose async machine which supports single (optimized) and multiple 
     // asynchronous operations
     public class AsyncMachine : IAsyncResult, IDisposable
     {
         #region Helper static methods
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine(MachineEngine engine, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -406,6 +392,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P>(MachineEngine<P> engine, P param, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -413,6 +400,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2>(MachineEngine<P1, P2> engine, P1 param1, P2 param2, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -420,6 +408,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3>(MachineEngine<P1, P2, P3> engine, P1 param1, P2 param2, P3 param3, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -427,6 +416,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4>(MachineEngine<P1, P2, P3, P4> engine, P1 param1, P2 param2, P3 param3, P4 param4, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -434,6 +424,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5>(MachineEngine<P1, P2, P3, P4, P5> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -441,6 +432,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6>(MachineEngine<P1, P2, P3, P4, P5, P6> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -448,6 +440,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7>(MachineEngine<P1, P2, P3, P4, P5, P6, P7> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -455,6 +448,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8>(MachineEngine<P1, P2, P3, P4, P5, P6, P7, P8> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -462,6 +456,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9>(MachineEngine<P1, P2, P3, P4, P5, P6, P7, P8, P9> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -469,6 +464,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>(MachineEngine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -476,6 +472,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>(MachineEngine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, P11 param11, AsyncCallback callback, object asyncState)
         {
             AsyncMachine machine = new AsyncMachine(callback, asyncState);
@@ -503,68 +500,10 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
 
             this.CompletionCallback = this.SingleOperationCompletionCallback;
             this.moveNextLock = new object();
-
-            //
-            // InitializeThreadContext
-            //
-            this.threadContextManager = new OperationContextThreadManager();
         }
 
         #endregion
 
-        #region Context restoration class
-        class OperationContextThreadManager : IThreadContextManager, IDisposable
-        {
-//            private readonly OperationContext operationContext;
-//            private OperationContext oldContext;
-
-            public OperationContextThreadManager()
-            {
-//                this.operationContext = OperationContext.Current;
-            }
-
-            public IDisposable EnterThreadContext()
-            {
-//                if (OperationContext.Current == this.operationContext)
-//                {
-//                    return null;
-//                }
-//
-//                if (this.oldContext != null)
-//                {
-//                    throw new InvalidOperationException("Can't set context differently");
-//                }
-//
-//                this.oldContext = OperationContext.Current;
-//                OperationContext.Current = this.operationContext;
-                return this;
-            }
-
-            public void SetThreadContext()
-            {
-//                this.oldContext = null;
-//                OperationContext.Current = this.operationContext;
-            }
-
-            public void Dispose()
-            {
-//                if (this.oldContext != null)
-//                {
-//                    OperationContext.Current = this.oldContext;
-//                    this.oldContext = null;
-//                }
-            }
-        }
-        #endregion
-
-        public void SetContextManager(IThreadContextManager manager)
-        {
-            if (this.Enumerator != null)
-            {
-                throw new InvalidOperationException("Thread context manager can't be set after starting operation");
-            }
-            this.threadContextManager = manager;
-        }
 
         // Create completion port with infinite timeout
         public CompletionPort CreateCompletionPort(int totalOperationsCount)
@@ -604,8 +543,10 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
                 timeout);
         }
 
+        public delegate void ExceptionCleanupDelegate(object sender, EventArgs e);
+
         // Event which is fired when exception cleanup is required
-        public event Action ExceptionCleanup;
+        public event ExceptionCleanupDelegate ExceptionCleanup;
 
         // Starts executing of the async machine
         public void Start(IEnumerable<CompletionPort> machine)
@@ -653,8 +594,6 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             {
                 throw this.Error.PrepareServerStackForRethrow();
             }
-
-            this.SetThreadContext();
         }
 
         // A callback supplied to a single asynchronous operation to get notified when it's completed
@@ -707,16 +646,25 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
 
         public void Dispose()
         {
-            if (this.waitHandle != null)
-            {
-                this.waitHandle.Close();
-                this.waitHandle = null;
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            if (this.WakeUpTimer != null)
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if(isDisposing)
             {
-                this.WakeUpTimer.Dispose();
-                this.WakeUpTimer = null;
+                if (this.waitHandle != null)
+                {
+                    this.waitHandle.Close();
+                    this.waitHandle = null;
+                }
+
+                if (this.WakeUpTimer != null)
+                {
+                    this.WakeUpTimer.Dispose();
+                    this.WakeUpTimer = null;
+                }
             }
         }
 
@@ -810,7 +758,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
 
                     if (this.ExceptionCleanup != null)
                     {
-                        this.ExceptionCleanup();
+                        this.ExceptionCleanup(this, EventArgs.Empty);
                     }
                 }
 
@@ -900,21 +848,8 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
 
         #region Thread Context helpers
 
-        private void SetThreadContext()
-        {
-            if (null != this.threadContextManager)
-            {
-                this.threadContextManager.SetThreadContext();
-            }
-        }
-
         private IDisposable EnterThreadContext()
         {
-            if (null != this.threadContextManager)
-            {
-                return this.threadContextManager.EnterThreadContext();
-            }
-
             return null;
         }
         #endregion
@@ -928,8 +863,6 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
         private IAsyncResult completionResult;
         private readonly AsyncCallback asyncMachineCompletionCallback;
         private readonly object moveNextLock;
-        private IThreadContextManager threadContextManager;
-
         #endregion
     }
 
@@ -952,6 +885,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
     {
         #region Helper static methods
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine(MachineEngineT<T> engine, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -959,6 +893,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P>(MachineEngineT<T, P> engine, P param, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -966,6 +901,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2>(MachineEngineT<T, P1, P2> engine, P1 param1, P2 param2, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -973,6 +909,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3>(MachineEngineT<T, P1, P2, P3> engine, P1 param1, P2 param2, P3 param3, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -980,6 +917,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4>(MachineEngineT<T, P1, P2, P3, P4> engine, P1 param1, P2 param2, P3 param3, P4 param4, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -987,6 +925,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5>(MachineEngineT<T, P1, P2, P3, P4, P5> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -994,6 +933,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6>(MachineEngineT<T, P1, P2, P3, P4, P5, P6> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -1001,6 +941,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7>(MachineEngineT<T, P1, P2, P3, P4, P5, P6, P7> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -1008,6 +949,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8>(MachineEngineT<T, P1, P2, P3, P4, P5, P6, P7, P8> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -1015,6 +957,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9>(MachineEngineT<T, P1, P2, P3, P4, P5, P6, P7, P8, P9> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -1022,6 +965,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>(MachineEngineT<T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -1029,6 +973,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>(MachineEngineT<T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, P11 param11, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<T> machine = new AsyncMachine<T>(callback, asyncState);
@@ -1077,6 +1022,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
     {
         #region Helper static methods
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine(MachineEngineRT<TReturn, T> engine, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1084,6 +1030,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P>(MachineEngineRT<TReturn, T, P> engine, P param, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1091,6 +1038,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2>(MachineEngineRT<TReturn, T, P1, P2> engine, P1 param1, P2 param2, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1098,6 +1046,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3>(MachineEngineRT<TReturn, T, P1, P2, P3> engine, P1 param1, P2 param2, P3 param3, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1105,6 +1054,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4>(MachineEngineRT<TReturn, T, P1, P2, P3, P4> engine, P1 param1, P2 param2, P3 param3, P4 param4, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1112,6 +1062,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1119,6 +1070,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5, P6> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1126,6 +1078,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5, P6, P7> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1133,6 +1086,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5, P6, P7, P8> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1140,6 +1094,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5, P6, P7, P8, P9> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1147,6 +1102,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);
@@ -1154,6 +1110,7 @@ namespace Microsoft.WindowsAzure.Management.Tools.Common.General
             return machine;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "EndAsyncMachine does the disposing")]
         public static IAsyncResult BeginAsyncMachine<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>(MachineEngineRT<TReturn, T, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11> engine, P1 param1, P2 param2, P3 param3, P4 param4, P5 param5, P6 param6, P7 param7, P8 param8, P9 param9, P10 param10, P11 param11, AsyncCallback callback, object asyncState)
         {
             AsyncMachine<TReturn, T> machine = new AsyncMachine<TReturn, T>(callback, asyncState);

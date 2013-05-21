@@ -147,13 +147,13 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
         public void ProcessGetWebsiteWithNullSubscription()
         {
             // Setup
-            GlobalComponents globalComponents = GlobalComponents.CreateFromPublishSettings(
+            GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(
                 GlobalPathInfo.GlobalSettingsDirectory,
                 null,
                 Data.ValidPublishSettings[0]);
             RemoveAzureSubscriptionCommand removeCmdlet = new RemoveAzureSubscriptionCommand();
             removeCmdlet.CommandRuntime = new MockCommandRuntime();
-            ICollection<string> subscriptions = globalComponents.Subscriptions.Keys;
+            ICollection<string> subscriptions = globalSettingsManager.Subscriptions.Keys;
 
             foreach (string subscription in subscriptions)
             {

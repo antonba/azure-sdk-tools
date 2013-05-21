@@ -26,7 +26,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Subscription
 
         internal static string ListResourcesPath(string subscriptionId, IEnumerable<string> knownResourceTypes)
         {
-            return string.Format("/{0}/services/?serviceList={1}",
+            return string.Format("/{0}/services/?serviceList={1}&expandlist=ServiceResource",
                 subscriptionId, string.Join(",", knownResourceTypes));
         }
 

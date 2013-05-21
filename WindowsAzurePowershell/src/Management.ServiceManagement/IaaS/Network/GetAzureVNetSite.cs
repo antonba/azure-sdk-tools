@@ -12,19 +12,19 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using System.Net;
-
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 {
     using System;
+    using System.Net;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Management.Automation;
     using System.ServiceModel;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using Model;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Get, "AzureVNetSite"), OutputType(typeof(IEnumerable<VirtualNetworkSiteContext>))]
     public class GetAzureVNetSiteCommand : ServiceManagementBaseCmdlet
@@ -52,7 +52,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             {
                 try
                 {
-                    WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.AzureVNetSiteBeginOperation, CommandRuntime.ToString()));
 
                     var sites = this.RetryCall(s => this.Channel.ListVirtualNetworkSites(s)).ToList();
 
@@ -62,13 +62,13 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 
                         if (sites.Count() == 0)
                         {
-                            throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "The specified virtual network name was not found: {0}", this.VNetName), "VirtualNetworkName");
+                            throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, Resources.VirtualNetworkNameNotFound, this.VNetName), "VirtualNetworkName");
                         }
                     }
 
                     Operation operation = GetOperation();
 
-                    WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.AzureVNetSiteCompletedOperation, CommandRuntime.ToString()));
 
                     return sites.Select(s => new VirtualNetworkSiteContext
                     {

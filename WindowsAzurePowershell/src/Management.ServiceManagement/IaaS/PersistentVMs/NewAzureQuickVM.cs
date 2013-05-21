@@ -13,7 +13,6 @@
 // ----------------------------------------------------------------------------------
 
 
-
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
 {
     using System;
@@ -28,6 +27,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
     using Storage;
     using WindowsAzure.ServiceManagement;
     using Helpers;
+    using Properties;
 
     /// <summary>
     /// Creates a VM without advanced provisioning configuration options
@@ -257,15 +257,15 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             CloudStorageAccount currentStorage = null;
             try
             {
-                currentStorage = currentSubscription.GetCurrentStorageAccount(Channel);
+                currentStorage = currentSubscription.GetCurrentStorageAccount();
             }
             catch (ServiceManagementClientException) // couldn't access
             {
-                throw new ArgumentException("CurrentStorageAccount is not accessible. Ensure the current storage account is accessible and in the same location or affinity group as your cloud service.");
+                throw new ArgumentException(Resources.CurrentStorageAccountIsNotAccessible);
             }
             if (currentStorage == null) // not set
             {
-                throw new ArgumentException("CurrentStorageAccount is not set. Use Set-AzureSubscription subname -CurrentStorageAccount storageaccount to set it.");
+                throw new ArgumentException(Resources.CurrentStorageAccountIsNotSet);
             }
 
             bool serviceExists = DoesCloudServiceExist(this.ServiceName);
@@ -274,7 +274,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if(serviceExists)
                 {
-                    throw new ApplicationException("Service already exists, Location cannot be specified.");
+                    throw new ApplicationException(Resources.ServiceExistsLocationCanNotBeSpecified);
                 }
             }
 
@@ -282,7 +282,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (serviceExists)
                 {
-                    throw new ApplicationException("Service already exists, AffinityGroup cannot be specified.");
+                    throw new ApplicationException(Resources.ServiceExistsAffinityGroupCanNotBeSpecified);
                 }
             }
 
@@ -306,7 +306,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                             Label = this.ServiceName
                         };
 
-                        ExecuteClientAction(chsi, CommandRuntime + " - Create Cloud Service", s => this.Channel.CreateHostedService(s, chsi));
+                        ExecuteClientAction(chsi, CommandRuntime + Resources.QuickVMCreateCloudService, s => this.Channel.CreateHostedService(s, chsi));
                     }
 
                     catch (ServiceManagementClientException ex)
@@ -323,9 +323,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                 {
                     if (!CertUtils.HasExportablePrivateKey(WinRMCertificate))
                     {
-                        throw new ArgumentException("WinRMCertificate needs to have an exportable private key.");
+                        throw new ArgumentException(Resources.WinRMCertificateDoesNotHaveExportablePrivateKey);
                     }
-                    var operationDescription = string.Format("{0} - Uploading WinRMCertificate: {1}", CommandRuntime, WinRMCertificate.Thumbprint);
+                    var operationDescription = string.Format(Resources.QuickVMUploadingWinRMCertificate, CommandRuntime, WinRMCertificate.Thumbprint);
                     var certificateFile = CertUtils.Create(WinRMCertificate);
                     ExecuteClientActionInOCS(null, operationDescription, s => this.Channel.AddCertificates(s, this.ServiceName, certificateFile));
                 }
@@ -340,7 +340,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                                                          };
                     foreach (var current in certificateFilesWithThumbprint.ToList())
                     {
-                        var operationDescription = string.Format("{0} - Uploading Certificate: {1}", CommandRuntime, current.Thumbprint);
+                        var operationDescription = string.Format(Resources.QuickVMUploadingCertificate, CommandRuntime, current.Thumbprint);
                         ExecuteClientActionInOCS(null, operationDescription, s => this.Channel.AddCertificates(s, this.ServiceName, current.CertificateFile));
                     }
                 }
@@ -371,7 +371,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                                 deployment.Dns.DnsServers.Add(dns);
                         }
 
-                        var operationDescription = string.Format("{0} - Create Deployment with VM {1}", CommandRuntime, vm.RoleName);
+                        var operationDescription = string.Format(Resources.QuickVMCreateDeploymentWithVM, CommandRuntime, vm.RoleName);
                         ExecuteClientAction(deployment, operationDescription, s => this.Channel.CreateDeployment(s, this.ServiceName, deployment));
 
                         if(WaitForBoot.IsPresent)
@@ -384,7 +384,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                     {
                         if (ex.HttpStatus == HttpStatusCode.NotFound)
                         {
-                            throw new Exception("Cloud Service does not exist. Specify -Location or -Affinity group to create one.");
+                            throw new Exception(Resources.ServiceDoesNotExistSpecifyLocationOrAffinityGroup);
                         }
                         else
                         {
@@ -400,7 +400,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (VNetName != null || DnsSettings != null)
                 {
-                    WriteWarning("VNetName or DnsSettings can only be specified on new deployments.");
+                    WriteWarning(Resources.VNetNameOrDnsSettingsCanOnlyBeSpecifiedOnNewDeployments);
                 }
             }
 
@@ -412,7 +412,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                 {
                     try
                     {
-                        var operationDescription = string.Format("{0} - Create VM {1}", CommandRuntime, vm.RoleName);
+                        var operationDescription = string.Format(Resources.QuickVMCreateVM, CommandRuntime, vm.RoleName);
                         ExecuteClientAction(vm, operationDescription, s => this.Channel.AddRole(s, this.ServiceName, this.ServiceName, vm));
                         if(WaitForBoot.IsPresent)
                         {
@@ -563,9 +563,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 try
                 {
-                    WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.QuickVMBeginOperation, CommandRuntime.ToString()));
                     AvailabilityResponse response = this.RetryCall(s => this.Channel.IsDNSAvailable(s, serviceName));
-                    WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.QuickVMCompletedOperation, CommandRuntime.ToString()));
                     IsPresent = !response.Result;
                 }
                 catch (ServiceManagementClientException ex)
@@ -583,22 +583,22 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
         {
             if (this.DnsSettings != null && string.IsNullOrEmpty(this.VNetName))
             {
-                throw new ArgumentException("VNetName is required when specifying DNS Settings.");
+                throw new ArgumentException(Resources.VNetNameRequiredWhenSpecifyingDNSSettings);
             }
 
             if (this.ParameterSetName.Contains("Linux") && string.IsNullOrEmpty(this.LinuxUser))
             {
-                throw new ArgumentException("Specify -LinuxUser when creating Linux Virtual Machines");
+                throw new ArgumentException(Resources.SpecifyLinuxUserWhenCreatingLinuxVMs);
             }
 
             if (this.ParameterSetName.Contains("Linux") && !ValidationHelpers.IsLinuxPasswordValid(this.Password))
             {
-                throw new ArgumentException("Password does not meet complexity requirements.");
+                throw new ArgumentException(Resources.PasswordNotComplexEnough);
             }
 
             if (this.ParameterSetName.Contains("Windows") && !ValidationHelpers.IsWindowsPasswordValid(this.Password))
             {
-                throw new ArgumentException("Password does not meet complexity requirements.");
+                throw new ArgumentException(Resources.PasswordNotComplexEnough);
             }
 
             if (this.ParameterSetName.Contains("Linux"))
@@ -614,7 +614,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                 }
                 if (valid == false)
                 {
-                    throw new ArgumentException("Hostname is invalid.");
+                    throw new ArgumentException(Resources.InvalidHostName);
                 }
             }
 
@@ -622,25 +622,25 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (this.ParameterSetName.Contains("Windows") && !ValidationHelpers.IsWindowsComputerNameValid(this.Name))
                 {
-                    throw new ArgumentException("Computer Name is invalid.");
+                    throw new ArgumentException(Resources.InvalidComputerName);
                 }
             }
             else
             {
                 if (this.ParameterSetName.Contains("Windows") && !ValidationHelpers.IsWindowsComputerNameValid(this.ServiceName))
                 {
-                    throw new ArgumentException("Computer Name is invalid.");
+                    throw new ArgumentException(Resources.InvalidComputerName);
                 }
             }
 
             if (!string.IsNullOrEmpty(this.Location) && !string.IsNullOrEmpty(this.AffinityGroup))
             {
-                throw new ArgumentException("Location or AffinityGroup, only one of them needs to be specified.");
+                throw new ArgumentException(Resources.EitherLocationOrAffinityGroupBeSpecified);
             }
 
             if (String.IsNullOrEmpty(this.VNetName) == false && (String.IsNullOrEmpty(this.Location) && String.IsNullOrEmpty(this.AffinityGroup)))
             {
-                throw new ArgumentException("Virtual Network Name may only be specified on the initial deployment. Specify Location or Affinity Group to create a new cloud service and deployment.");
+                throw new ArgumentException(Resources.VNetNameCanBeSpecifiedOnlyOnInitialDeployment);
             }
         }
     }

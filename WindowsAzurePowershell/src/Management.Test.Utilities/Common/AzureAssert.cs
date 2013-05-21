@@ -40,12 +40,12 @@ namespace Microsoft.WindowsAzure.Management.Test.Utilities.Common
             Assert.AreEqual(azureSdkPath, actual.AzureDirectory);
         }
 
-        public static void AreEqualGlobalComponents(GlobalComponents expected, GlobalComponents actual)
+        public static void AreEqualGlobalSettingsManager(GlobalSettingsManager expected, GlobalSettingsManager actual)
         {
-            AreEqualGlobalComponents(expected.GlobalPaths, expected.PublishSettings, actual);
+            AreEqualGlobalSettingsManager(expected.GlobalPaths, expected.PublishSettings, actual);
         }
 
-        public static void AreEqualGlobalComponents(GlobalPathInfo paths, PublishData publishSettings, GlobalComponents actual)
+        public static void AreEqualGlobalSettingsManager(GlobalPathInfo paths, PublishData publishSettings, GlobalSettingsManager actual)
         {
             AreEqualGlobalPathInfo(paths, actual.GlobalPaths);
         }

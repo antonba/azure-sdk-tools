@@ -39,6 +39,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             {
                 Assert.Inconclusive("No Subscription is selected!");
             }
+            ReImportSubscription();
 
             pass = true;
             testStartTime = DateTime.Now;
@@ -215,7 +216,6 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
         /// </summary>
         [TestMethod(), TestCategory("Functional"), TestProperty("Feature", "IAAS"), Priority(1), Owner("hylee"), Description("Test the cmdlet (Add-AzureVhd)")]
         [DataSource("Microsoft.VisualStudio.TestTools.DataSource.CSV", "|DataDirectory|\\Resources\\overwrite_VHD.csv", "overwrite_VHD#csv", DataAccessMethod.Sequential)]
-        [Ignore]
         public void UploadDiskSecondWithoutOverwrite()
         {
             StartTest(MethodBase.GetCurrentMethod().Name, testStartTime);

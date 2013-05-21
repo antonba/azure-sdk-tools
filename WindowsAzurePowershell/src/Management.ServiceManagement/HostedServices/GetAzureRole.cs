@@ -19,9 +19,10 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
     using System.Linq;
     using System.Management.Automation;
     using System.ServiceModel;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using Model;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Get, "AzureRole"), OutputType(typeof(RoleContext))]
     public class GetAzureRoleCommand : ServiceManagementBaseCmdlet
@@ -43,7 +44,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
         }
 
         [Parameter(Position = 1, Mandatory = true, ValueFromPipelineByPropertyName = true, HelpMessage = "Deployment slot")]
-        [ValidateSet("Staging", "Production", IgnoreCase = true)]
+        [ValidateSet(DeploymentSlotType.Staging, DeploymentSlotType.Production, IgnoreCase = true)]
         public string Slot
         {
             get;
@@ -150,12 +151,12 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
         {
             using (new OperationContextScope(Channel.ToContextChannel()))
             {
-                WriteVerboseWithTimestamp("Begin Operation: Get Deployment");
+                WriteVerboseWithTimestamp(Resources.GetDeploymentBeginOperation);
 
                 var currentDeployment = this.RetryCall(s => this.Channel.GetDeploymentBySlot(s, this.ServiceName, this.Slot));
                 operation = GetOperation();
 
-                WriteVerboseWithTimestamp("Completed Operation: Get Deployment");
+                WriteVerboseWithTimestamp(Resources.GetDeploymentCompletedOperation);
                 return currentDeployment;
             }
         }

@@ -32,8 +32,8 @@ namespace Microsoft.WindowsAzure.Management.Tools.Vhd.Model.Persistence
         {
             var buffer = new byte[attributeHelper.GetEntityAttribute().Size];
             using (var stream = new MemoryStream(buffer))
-            using (var writer = new BinaryWriter(stream))
             {
+                var writer = new BinaryWriter(stream);
                 var dataWriter = new VhdDataWriter(writer);
                 dataWriter.WriteBytes(attributeHelper.GetAttribute(() => vhdFooter.Cookie).Offset, vhdFooter.Cookie.Data);
 

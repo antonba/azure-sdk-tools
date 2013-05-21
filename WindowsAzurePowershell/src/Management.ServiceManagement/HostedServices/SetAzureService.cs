@@ -16,8 +16,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 {
     using System;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using Utilities.Common;
+    using WindowsAzure.ServiceManagement;
+    using Properties;
 
     /// <summary>
     /// Sets the label and description of the specified hosted service
@@ -64,7 +65,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
             {
                 ThrowTerminatingError(new ErrorRecord(
                                                new Exception(
-                                               "You must specify a value for either Label or Description."),
+                                               Resources.LabelOrDescriptionMustBeSpecified),
                                                string.Empty,
                                                ErrorCategory.InvalidData,
                                                null));
@@ -72,7 +73,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 
             var updateHostedServiceInput = new UpdateHostedServiceInput
             {
-                Label = this.Label != null ? this.Label: null,
+                Label = this.Label ?? null,
                 Description =  this.Description
             };
 

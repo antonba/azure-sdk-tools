@@ -17,8 +17,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System;
     using System.IO;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using Utilities.Common;
+    using WindowsAzure.ServiceManagement;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Set, "AzureVNetConfig"), OutputType(typeof(ManagementOperationContext))]
     public class SetAzureVNetConfigCommand : ServiceManagementBaseCmdlet
@@ -71,7 +72,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
         {
             if (!File.Exists(ConfigurationPath))
             {
-                throw new ArgumentException("The specified network configuration file path does not exist.");
+                throw new ArgumentException(Resources.NetworkConfigurationFilePathDoesNotExist);
             }
         }
     }

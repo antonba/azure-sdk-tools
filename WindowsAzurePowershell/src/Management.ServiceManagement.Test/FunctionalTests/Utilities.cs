@@ -19,8 +19,6 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
     using System.Text.RegularExpressions;
     using Microsoft.WindowsAzure.Management.ServiceManagement.Test.Properties;
 
-
-
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Microsoft.WindowsAzure.Management.ServiceManagement.Model;
     using System.Threading;
@@ -28,9 +26,20 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
 
     using Microsoft.WindowsAzure.Storage.Blob;
 
+    using System.Security.Cryptography;
+    using System.Security.Cryptography.X509Certificates;
+    using Security.Cryptography;
+    using Security.Cryptography.X509Certificates;
+    using System.Diagnostics;
+    using System.Security;
+
+    using System.Xml;
+    using System.Text;
+
     internal class Utilities 
     {
         public static string windowsAzurePowershellPath = Path.Combine(Environment.CurrentDirectory);
+        public const string windowsAzurePowershellModuleStorage = "Microsoft.WindowsAzure.Management.Storage.dll";
         public const string windowsAzurePowershellModuleManagement = "Microsoft.WindowsAzure.Management.dll";
         public const string windowsAzurePowershellModuleService = "Microsoft.WindowsAzure.Management.Service.dll";
         public const string windowsAzurePowershellModuleServiceManagement = "Microsoft.WindowsAzure.Management.ServiceManagement.dll";
@@ -119,8 +128,18 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
         public const string GetAzureServiceCmdletName = "Get-AzureService";
         public const string SetAzureServiceCmdletName = "Set-AzureService";
         public const string RemoveAzureServiceCmdletName = "Remove-AzureService";
-        // AzureServiceDesktopExtension
+
+        // AzureServiceRemoteDesktopExtension
+        public const string NewAzureServiceRemoteDesktopExtensionConfigCmdletName = "New-AzureServiceRemoteDesktopExtensionConfig";
         public const string SetAzureServiceRemoteDesktopExtensionCmdletName = "Set-AzureServiceRemoteDesktopExtension";
+        public const string GetAzureServiceRemoteDesktopExtensionCmdletName = "Get-AzureServiceRemoteDesktopExtension";
+        public const string RemoveAzureServiceRemoteDesktopExtensionCmdletName = "Remove-AzureServiceRemoteDesktopExtension";
+
+        // AzureServiceDiagnosticExtension
+        public const string NewAzureServiceDiagnosticsExtensionConfigCmdletName = "New-AzureServiceDiagnosticsExtensionConfig";
+        public const string SetAzureServiceDiagnosticsExtensionCmdletName = "Set-AzureServiceDiagnosticsExtension";
+        public const string GetAzureServiceDiagnosticsExtensionCmdletName = "Get-AzureServiceDiagnosticsExtension";
+        public const string RemoveAzureServiceDiagnosticsExtensionCmdletName = "Remove-AzureServiceDiagnosticsExtension";
         
         // AzureSSHKey
         public const string NewAzureSSHKeyCmdletName = "New-AzureSSHKey";
@@ -287,7 +306,6 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             }
             
         }
-        
 
         public static bool PrintAndCompareDeployment
             (DeploymentInfoContext deployment, string serviceName, string deploymentName, string deploymentLabel, string slot, string status, int instanceCount)
@@ -300,7 +318,6 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             {
                 Console.WriteLine("InstanceName - {0}, InstanceStatus - {1}", instance.InstanceName, instance.InstanceStatus);
             }
-
 
             Assert.AreEqual(deployment.ServiceName, serviceName);
             Assert.AreEqual(deployment.DeploymentName, deploymentName);
@@ -417,6 +434,124 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                 }
             }
             return false;            
+        }
+
+        public static X509Certificate2 CreateCertificate(string issuer, string friendlyName, string password)
+        {
+
+            var keyCreationParameters = new CngKeyCreationParameters
+            {
+                ExportPolicy = CngExportPolicies.AllowExport,
+                KeyCreationOptions = CngKeyCreationOptions.None,
+                KeyUsage = CngKeyUsages.AllUsages,
+                Provider = CngProvider.MicrosoftSoftwareKeyStorageProvider
+            };
+
+            keyCreationParameters.Parameters.Add(new CngProperty("Length", BitConverter.GetBytes(2048), CngPropertyOptions.None));
+
+            CngKey key = CngKey.Create(CngAlgorithm2.Rsa, null, keyCreationParameters);
+
+            var creationParams = new X509CertificateCreationParameters(new X500DistinguishedName(issuer))
+            {
+                TakeOwnershipOfKey = true
+            };
+
+            X509Certificate2 cert = key.CreateSelfSignedCertificate(creationParams);
+            key = null;
+            cert.FriendlyName = friendlyName;
+
+            byte[] bytes = cert.Export(X509ContentType.Pfx, password);
+            X509Certificate2 returnCert = new X509Certificate2();
+            returnCert.Import(bytes, password, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+            return returnCert;
+        }        
+
+        public static SecureString convertToSecureString(string str)
+        {
+            SecureString secureStr = new SecureString();
+            foreach (char c in str)
+            {
+                secureStr.AppendChar(c);
+            }
+            return secureStr;
+        }
+
+        public static bool RDPtestPaaS(string dns, string roleName, int instance, string user, string psswrd, bool shouldSucceed)
+        {
+             return (ExecuteSimpleProcess("RDPTest.exe",
+                 String.Format("PaaS {0} {1} {2} {3} {4} {5}", dns, roleName, instance.ToString(), user, psswrd, shouldSucceed.ToString())) == 0);
+        }
+
+        public static bool RDPtestIaaS(string dns, int? port, string user, string psswrd, bool shouldSucceed)
+        {
+            return (ExecuteSimpleProcess("RDPTest.exe",
+                String.Format("IaaS {0} {1} {2} {3} {4}", dns, port.ToString(), user, psswrd, shouldSucceed.ToString())) == 0);
+        }
+
+        public static int ExecuteSimpleProcess(string fileName, string arguments)
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = fileName;
+            p.StartInfo.Arguments = arguments;
+            p.Start();
+            p.WaitForExit();
+            return p.ExitCode;
+        }
+
+        public static string FindSubstring(string givenStr, char givenChar, int i)
+        {
+            if (i > 0)
+            {
+                return FindSubstring(givenStr.Substring(givenStr.IndexOf(givenChar) + 1), givenChar, i - 1);
+            }
+            else
+            {
+                return givenStr;
+            }
+        }
+
+        public static bool CompareDateTime(DateTime expectedDate, string givenDate)
+        {
+            DateTime resultExpDate = DateTime.Parse(givenDate);
+            bool result = (resultExpDate.Day == expectedDate.Day);
+            result &= (resultExpDate.Month == expectedDate.Month);
+            result &= (resultExpDate.Year == expectedDate.Year);
+            return result;
+        }
+
+        public static string GetInnerXml(string xmlString, string tag)
+        {
+            string removedHeader = "<" + Utilities.FindSubstring(xmlString, '<', 2);
+
+            byte[] encodedString = Encoding.UTF8.GetBytes(xmlString);
+            MemoryStream stream = new MemoryStream(encodedString);
+            stream.Flush();
+            stream.Position = 0;
+
+            XmlDocument xml = new XmlDocument();
+            xml.Load(stream);
+            return xml.GetElementsByTagName(tag)[0].InnerXml;
+        }
+
+        public static bool CompareWadCfg(string wadcfg, XmlDocument daconfig)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(wadcfg))
+                {
+                    Assert.IsNull(wadcfg);
+                }
+                else
+                {
+                    string innerXml = daconfig.InnerXml;
+                    Assert.AreEqual(Utilities.FindSubstring(wadcfg, '<', 2), Utilities.FindSubstring(innerXml, '<', 2));
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -12,6 +12,7 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+
 namespace Microsoft.WindowsAzure.Management.Sync.Upload
 {
     using System;
@@ -20,6 +21,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
     using System.IO;
     using System.Runtime.Serialization;
     using System.Security.Cryptography;
+    using System.Security.Permissions;
     using Sync.IO;
     using Tools.Vhd;
 
@@ -83,8 +85,8 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
             using(var md5 = MD5.Create())
             {
                 using (var swrp = new StreamWithReadProgress(stream, TimeSpan.FromSeconds(1)))
-                using (var bs = new BufferedStream(swrp))
                 {
+                    var bs = new BufferedStream(swrp);
                     Program.SyncOutput.MessageCalculatingMD5Hash(filePath);
                     var md5Hash = md5.ComputeHash(bs);
                     Program.SyncOutput.MessageMD5HashCalculationFinished();
@@ -103,6 +105,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
         [DataMember(EmitDefaultValue = false, Order = 20)]
         public int CsUploadProcessId { get; set; }
 
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         public static SystemInformation Create()
         {
             return new SystemInformation

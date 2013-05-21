@@ -34,7 +34,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Subscription
         [TestMethod]
         public void TestSetCurrentSubscription()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var selectSubscriptionCommand = new SelectAzureSubscriptionCommand();
 
@@ -46,13 +46,13 @@ namespace Microsoft.WindowsAzure.Management.Test.Subscription
             Assert.AreEqual("mysub1", selectSubscriptionCommand.GetCurrentSubscription().SubscriptionName);
 
             // Clean
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
 
         [TestMethod]
         public void TestClearCurrentSubscription()
         {
-            var globalComponents = GlobalComponents.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
+            var globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(GlobalPathInfo.GlobalSettingsDirectory, null, Data.ValidPublishSettings.First());
 
             var selectSubscriptionCommand = new SelectAzureSubscriptionCommand();
 
@@ -68,7 +68,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Subscription
             Assert.AreEqual("Windows Azure Sandbox 9-220", selectSubscriptionCommand.GetCurrentSubscription().SubscriptionName);
 
             // Clean
-            globalComponents.DeleteGlobalComponents();
+            globalSettingsManager.DeleteGlobalSettingsManager();
         }
     }
 }

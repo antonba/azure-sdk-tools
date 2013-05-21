@@ -82,7 +82,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.UnitTests.Cmd
                 winRmUri.ExecuteCommandBody();
                 Assert.Fail("Should throw argument out of range exception");
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -103,7 +103,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.UnitTests.Cmd
                 winRmUri.ExecuteCommandBody();
                 Assert.Fail("Should throw argument out of range exception");
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }
@@ -125,7 +125,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.UnitTests.Cmd
                 winRmUri.ExecuteCommandBody();
                 Assert.Fail("Should throw argument out of range exception");
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (ArgumentOutOfRangeException)
             {
             }
         }

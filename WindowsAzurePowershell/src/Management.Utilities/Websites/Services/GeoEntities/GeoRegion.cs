@@ -16,8 +16,10 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Websites.Services.GeoEntit
 {
     using System.Collections.Generic;
     using System.Runtime.Serialization;
+    using System.Xml.Serialization;
 
     [DataContract]
+    [XmlRoot("GeoRegion", Namespace = UriElements.ServiceNamespace)]
     public class GeoRegion
     {
         [DataMember]
@@ -31,6 +33,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Websites.Services.GeoEntit
     }
 
     [CollectionDataContract(Namespace = UriElements.ServiceNamespace)]
+    [XmlRoot("GeoRegions", Namespace = UriElements.ServiceNamespace)]
     public class GeoRegions : List<GeoRegion>
     {
 

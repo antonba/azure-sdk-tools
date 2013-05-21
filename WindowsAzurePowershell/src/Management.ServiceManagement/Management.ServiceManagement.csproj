@@ -156,6 +156,51 @@
     <Compile Include="Common\ValidateDeploymentUpgradeTypeAttribute.cs" />
     <Compile Include="Common\ValidateVMSizeAttribute.cs" />
     <Compile Include="Common\ValidationHelpers.cs" />
+    <Compile Include="Extensions\BaseAzureServiceDiagnosticsExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\BaseAzureServiceExtensionCmdlet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\BaseAzureServiceRemoteDesktopExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\DiagnosticsExtensionContext.cs" />
+    <Compile Include="Extensions\ExtensionConfigurationBuilder.cs" />
+    <Compile Include="Extensions\ExtensionConfigurationInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\ExtensionManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\ExtensionRole.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\GetAzureServiceDiagnosticsExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\GetAzureServiceRemoteDesktopExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\NewAzureServiceDiagnosticsExtensionConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\NewAzureServiceRemoteDesktopExtensionConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\RemoteDesktopExtensionContext.cs" />
+    <Compile Include="Extensions\RemoveAzureServiceDiagnosticsExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\RemoveAzureServiceRemoteDesktopExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\SetAzureServiceDiagnosticsExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\SetAzureServiceRemoteDesktopExtension.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Helpers\CertUtils.cs" />
     <Compile Include="Helpers\Disks.cs" />
     <Compile Include="Helpers\PersistentVMHelper.cs" />
@@ -300,6 +345,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

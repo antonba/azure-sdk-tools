@@ -15,6 +15,7 @@
 using Management.Storage.ScenarioTest.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using MS.Test.Common.MsTestLib;
 using StorageTestLib;
@@ -79,8 +80,7 @@ namespace Management.Storage.ScenarioTest.Common
             Test.Info(string.Format("{0} Class Initialize", testContext.FullyQualifiedTestClassName));
             Test.FullClassName = testContext.FullyQualifiedTestClassName;
 
-            string ConnectionString = Test.Data.Get("StorageConnectionString");
-            StorageAccount = CloudStorageAccount.Parse(ConnectionString);
+            StorageAccount = GetCloudStorageAccountFromConfig();
 
             //init the blob helper for blob related operations
             blobUtil = new CloudBlobUtil(StorageAccount);
@@ -92,7 +92,7 @@ namespace Management.Storage.ScenarioTest.Common
             PowerShellAgent.ImportModule(moduleFilePath);
 
             //set the default storage context
-            PowerShellAgent.SetStorageContext(ConnectionString);
+            PowerShellAgent.SetStorageContext(StorageAccount.ToString(true));
 
             random = new Random();
             ContainerInitCount = blobUtil.GetExistingContainerCount();
@@ -132,6 +132,21 @@ namespace Management.Storage.ScenarioTest.Common
             {
                 Test.Warn(message);
             }
+        }
+
+        /// <summary>
+        /// Get Cloud storage account from Test.xml
+        /// </summary>
+        /// <param name="configKey">Config key. Will return the default storage account when it's empty.</param>
+        /// <param name="useHttps">Use https or not</param>
+        /// <returns>Cloud Storage Account with specified end point</returns>
+        public static CloudStorageAccount GetCloudStorageAccountFromConfig(string configKey = "", bool useHttps = true)
+        {
+            string StorageAccountName = Test.Data.Get(string.Format("{0}StorageAccountName", configKey));
+            string StorageAccountKey = Test.Data.Get(string.Format("{0}StorageAccountKey", configKey));
+            string StorageEndPoint = Test.Data.Get(string.Format("{0}StorageEndPoint", configKey));
+            StorageCredentials credential = new StorageCredentials(StorageAccountName, StorageAccountKey);
+            return Utility.GetStorageAccountWithEndPoint(credential, useHttps, StorageEndPoint);
         }
 
         /// <summary>
@@ -228,7 +243,7 @@ namespace Management.Storage.ScenarioTest.Common
         /// <param name="expect">expect string</param>
         /// <param name="actually">returned string</param>
         /// <param name="name">Compare name</param>
-        public void ExpectEqual(string expect, string actually, string name)
+        public static void ExpectEqual(string expect, string actually, string name)
         {
             Test.Assert(expect == actually, string.Format("{0} should be {1}, and actully it's {2}", name, expect, actually));
         }
@@ -239,7 +254,7 @@ namespace Management.Storage.ScenarioTest.Common
         /// <param name="expect">expect double</param>
         /// <param name="actually">returned double</param>
         /// <param name="name">Compare name</param>
-        public void ExpectEqual(double expect, double actually, string name)
+        public static void ExpectEqual(double expect, double actually, string name)
         {
             Test.Assert(expect == actually, string.Format("{0} should be {1}, and actully it's {2}", name, expect, actually));
         }
@@ -250,7 +265,7 @@ namespace Management.Storage.ScenarioTest.Common
         /// <param name="expect">expect string</param>
         /// <param name="actually">returned string</param>
         /// <param name="name">Compare name</param>
-        public void ExpectNotEqual(string expect, string actually, string name)
+        public static void ExpectNotEqual(string expect, string actually, string name)
         {
             Test.Assert(expect != actually, string.Format("{0} should not be {1}, and actully it's {2}", name, expect, actually));
         }
@@ -261,7 +276,7 @@ namespace Management.Storage.ScenarioTest.Common
         /// <param name="expect">expect double</param>
         /// <param name="actually">returned double</param>
         /// <param name="name">Compare name</param>
-        public void ExpectNotEqual(double expect, double actually, string name)
+        public static void ExpectNotEqual(double expect, double actually, string name)
         {
             Test.Assert(expect != actually, string.Format("{0} should not be {1}, and actully it's {2}", name, expect, actually));
         }
@@ -286,20 +301,6 @@ namespace Management.Storage.ScenarioTest.Common
             int switchKey = 0;
             switchKey = random.Next(0, 2);
             return switchKey == 0;
-        }
-
-        /// <summary>
-        /// Generate a temp local file for testing
-        /// </summary>
-        /// <returns>The temp local file path</returns>
-        public string GenerateOneTempTestFile()
-        {
-            string fileName = Utility.GenNameString("tempfile");
-            string uploadDirRoot = Test.Data.Get("UploadDir");
-            string filePath = Path.Combine(uploadDirRoot, fileName);
-            int fileSize = GetRandomTestCount();
-            Helper.GenerateRandomTestFile(filePath, fileSize);
-            return filePath;
         }
     }
 }

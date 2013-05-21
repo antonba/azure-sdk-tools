@@ -16,9 +16,12 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Management.Automation;
     using Microsoft.WindowsAzure.Management.Test.Utilities.Common;
     using Microsoft.WindowsAzure.Management.Test.Utilities.Websites;
+    using Microsoft.WindowsAzure.Management.Utilities.Websites;
     using Microsoft.WindowsAzure.Management.Websites;
+    using Moq;
     using VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -28,24 +31,22 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
         public void ProcessGetAzureWebsiteLocationTest()
         {
             // Setup
-            SimpleWebsitesManagement channel = new SimpleWebsitesManagement();
+            Mock<IWebsitesClient> clientMock = new Mock<IWebsitesClient>();
+            Mock<ICommandRuntime> commandRuntimeMock = new Mock<ICommandRuntime>();
+            List<string> regions = new List<string>() {"West US", "North Moon", "Central West Sun"};
+            clientMock.Setup(f => f.ListAvailableLocations()).Returns(regions);
 
             // Test
-            GetAzureWebsiteLocationCommand getAzureWebsiteCommand = new GetAzureWebsiteLocationCommand(channel)
+            GetAzureWebsiteLocationCommand getAzureWebsiteCommand = new GetAzureWebsiteLocationCommand()
             {
-                ShareChannel = true,
-                CommandRuntime = new MockCommandRuntime()
+                WebsitesClient = clientMock.Object,
+                CommandRuntime = commandRuntimeMock.Object
             };
 
             getAzureWebsiteCommand.ExecuteCmdlet();
-            Assert.AreEqual(1, ((MockCommandRuntime)getAzureWebsiteCommand.CommandRuntime).OutputPipeline.Count);
-            var locations = (IEnumerable<string>)((MockCommandRuntime)getAzureWebsiteCommand.CommandRuntime).OutputPipeline.FirstOrDefault();
-            Assert.IsNotNull(locations);
-            Assert.IsTrue(locations.Any(loc => loc.Equals("East US")));
-            Assert.IsTrue(locations.Any(loc => loc.Equals("West US")));
-            Assert.IsTrue(locations.Any(loc => loc.Equals("North Europe")));
-            Assert.IsTrue(locations.Any(loc => loc.Equals("West Europe")));
-            Assert.IsTrue(locations.Any(loc => loc.Equals("East Asia")));
+
+            clientMock.Verify(f => f.ListAvailableLocations(), Times.Once());
+            commandRuntimeMock.Verify(f => f.WriteObject(regions, true), Times.Once());
         }
     }
 }

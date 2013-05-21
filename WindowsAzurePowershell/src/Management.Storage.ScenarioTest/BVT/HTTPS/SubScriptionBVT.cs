@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Management.Storage.ScenarioTest.Common;
 
 namespace Management.Storage.ScenarioTest.BVT.HTTPS
 {
@@ -35,11 +36,8 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
             //first set the storage account
             //second init common bvt
             //third set storage context in powershell
-            string ConnectionString = Test.Data.Get("StorageConnectionString");
-            SetUpStorageAccount = CloudStorageAccount.Parse(ConnectionString);
-
+            SetUpStorageAccount = TestBase.GetCloudStorageAccountFromConfig();
             CLICommonBVT.CLICommonBVTInitialize(testContext);
-
             SetupSubscription();
         }
 
@@ -51,7 +49,7 @@ namespace Management.Storage.ScenarioTest.BVT.HTTPS
             string subscriptionFile = Test.Data.Get("AzureSubscriptionPath");
             string subscriptionName = Test.Data.Get("AzureSubscriptionName");
             //TODO add tests about invalid storage account name
-            string storageAccountName = Test.Data.Get("SubscriptionStorageAccountName");
+            string storageAccountName = Test.Data.Get("StorageAccountName");
             PowerShellAgent.ImportAzureSubscriptionAndSetStorageAccount(subscriptionFile, subscriptionName, storageAccountName);
         }
 

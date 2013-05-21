@@ -40,17 +40,27 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
 
         public void Dispose()
         {
-            if(disposed)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
             {
                 return;
             }
 
-            if(SingleInstanceMutex != null)
+            if(disposing)
             {
-                SingleInstanceMutex.ReleaseMutex();
-            }
+                if (SingleInstanceMutex != null)
+                {
+                    SingleInstanceMutex.ReleaseMutex();
+                    SingleInstanceMutex.Close();
+                }
 
-            disposed = true;
+                disposed = true;
+            }
         }
     }
 }

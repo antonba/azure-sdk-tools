@@ -19,6 +19,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.StorageServices
     using Utilities.Common;
     using WindowsAzure.ServiceManagement;
     using Storage.Auth;
+    using Properties;
 
     public class StorageCredentialsFactory
     {
@@ -46,7 +47,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.StorageServices
             {
                 if(currentSubscription == null)
                 {
-                    throw new ArgumentException("Call Set-AzureSubscription and Select-AzureSubscription first.", "SubscriptionId");
+                    throw new ArgumentException(Resources.StorageCredentialsFactoryCurrentSubscriptionNotSet, "SubscriptionId");
                 }
                 StorageService sService = this.channel.GetStorageKeys(currentSubscription.SubscriptionId, destination.StorageAccountName);
                 return new StorageCredentials(destination.StorageAccountName, sService.StorageServiceKeys.Primary);

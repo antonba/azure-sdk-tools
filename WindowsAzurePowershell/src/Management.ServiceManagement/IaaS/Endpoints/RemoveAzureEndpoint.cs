@@ -21,8 +21,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
     using System.Linq;
     using System.Management.Automation;
     using IaaS;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Remove, "AzureEndpoint"), OutputType(typeof(IPersistentVM))]
     public class RemoveAzureInputEndpointCommand : VirtualMachineConfigurationCmdletBase
@@ -43,7 +44,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
             {
                 ThrowTerminatingError(
                     new ErrorRecord(
-                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "An endpoint named '{0}' cannot be found in the configuration of this VM.", Name)),
+                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.EndpointCanNotBeFoundInVMConfiguration, Name)),
                             string.Empty,
                             ErrorCategory.InvalidData,
                             null));

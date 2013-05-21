@@ -16,8 +16,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 {
     using System;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     /// <summary>
     /// Swaps the deployments in production and stage.
@@ -54,21 +55,21 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
 
             if(stagingDeployment == null && prodDeployment == null)
             {
-                throw new ArgumentOutOfRangeException(String.Format("No deployment found in Staging or Production: {0}", ServiceName));
+                throw new ArgumentOutOfRangeException(String.Format(Resources.NoDeploymentInStagingOrProduction, ServiceName));
             }
 
             if(stagingDeployment == null && prodDeployment != null)
             {
-                throw new ArgumentOutOfRangeException(String.Format("No deployment found in Staging: {0}", ServiceName));
+                throw new ArgumentOutOfRangeException(String.Format(Resources.NoDeploymentInStaging, ServiceName));
             }
 
             if(prodDeployment == null)
             {
-                this.WriteVerbose(string.Format("Moving deployment from Staging to Production:{0}", ServiceName));
+                this.WriteVerbose(string.Format(Resources.MovingDeploymentFromStagingToProduction, ServiceName));
             }
             else
             {
-                this.WriteVerbose(string.Format("VIP Swap is taking place between Staging and Production deployments.:{0}", ServiceName));
+                this.WriteVerbose(string.Format(Resources.VIPSwapBetweenStagingAndProduction, ServiceName));
             }
 
             var swapDeploymentInput = new SwapDeploymentInput
@@ -90,13 +91,13 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.HostedServices
                 {
                     if (string.Compare(prodDeployment.RoleList[0].RoleType, "PersistentVMRole", StringComparison.OrdinalIgnoreCase) == 0)
                     {
-                        throw new ArgumentException(String.Format("Cannot Move Deployments with Virtual Machines Present in {0}", slot));
+                        throw new ArgumentException(String.Format(Resources.CanNotMoveDeploymentsWhileVMsArePresent, slot));
                     }
                 }
             }
             catch (ServiceManagementClientException)
             {
-                this.WriteDebug(String.Format("No deployment found in {0}", slot));
+                this.WriteDebug(String.Format(Resources.NoDeploymentFoundToMove, slot));
             }
 
             return prodDeployment;

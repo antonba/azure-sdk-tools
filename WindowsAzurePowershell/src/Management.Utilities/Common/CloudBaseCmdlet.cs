@@ -127,8 +127,8 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
         {
             if (!string.IsNullOrEmpty(subscriptionName))
             {
-                GlobalComponents globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory);
-                CurrentSubscription = globalComponents.Subscriptions.Values.First(sub => sub.SubscriptionName == subscriptionName);
+                GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory);
+                CurrentSubscription = globalSettingsManager.Subscriptions.Values.First(sub => sub.SubscriptionName == subscriptionName);
             }
         }
 

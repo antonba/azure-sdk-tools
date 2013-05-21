@@ -19,8 +19,10 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
     using Microsoft.WindowsAzure.Management.Test.Utilities.Common;
     using Microsoft.WindowsAzure.Management.Test.Utilities.Websites;
     using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Microsoft.WindowsAzure.Management.Utilities.Websites;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Services.WebEntities;
     using Microsoft.WindowsAzure.Management.Websites;
+    using Moq;
     using VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -31,8 +33,11 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
         {
             const string websiteName = "website1";
             const string webspaceName = "webspace1";
+            const string suffix = "azurewebsites.com";
 
             // Setup
+            Mock<IWebsitesClient> clientMock = new Mock<IWebsitesClient>();
+            clientMock.Setup(f => f.GetWebsiteDnsSuffix()).Returns(suffix);
             bool created = true;
             SimpleWebsitesManagement channel = new SimpleWebsitesManagement();
             channel.GetWebSpacesThunk = ar => new WebSpaces(new List<WebSpace>
@@ -60,7 +65,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
                                               Site website = ar.Values["site"] as Site;
                                               Assert.IsNotNull(website);
                                               Assert.AreEqual(websiteName, website.Name);
-                                              Assert.IsNotNull(website.HostNames.FirstOrDefault(hostname => hostname.Equals(websiteName + General.AzureWebsiteHostNameSuffix)));
+                                              Assert.IsNotNull(website.HostNames.FirstOrDefault(hostname => hostname.Equals(string.Format("{0}.{1}", websiteName, suffix))));
                                               created = true;
                                               return website;
                                           };
@@ -73,12 +78,61 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
                 CommandRuntime = mockRuntime,
                 Name = websiteName,
                 Location = webspaceName,
-                CurrentSubscription = new SubscriptionData { SubscriptionId = base.subscriptionId }
+                CurrentSubscription = new SubscriptionData { SubscriptionId = base.subscriptionId },
+                WebsitesClient = clientMock.Object
             };
 
             newAzureWebsiteCommand.ExecuteCmdlet();
             Assert.IsTrue(created);
             Assert.AreEqual<string>(websiteName, (mockRuntime.OutputPipeline[0] as SiteWithConfig).Name);
+        }
+
+        [TestMethod]
+        public void GetsWebsiteDefaultLocation()
+        {
+            const string websiteName = "website1";
+            const string suffix = "azurewebsites.com";
+
+            // Setup
+            Mock<IWebsitesClient> clientMock = new Mock<IWebsitesClient>();
+            clientMock.Setup(f => f.GetWebsiteDnsSuffix()).Returns(suffix);
+            bool created = true;
+            SimpleWebsitesManagement channel = new SimpleWebsitesManagement();
+            channel.GetWebSpacesThunk = ar => new WebSpaces();
+
+            channel.GetSiteConfigThunk = ar =>
+            {
+                return new SiteConfig
+                {
+                    PublishingUsername = "user1"
+                };
+            };
+
+            channel.CreateSiteThunk = ar =>
+            {
+                Site website = ar.Values["site"] as Site;
+                Assert.IsNotNull(website);
+                Assert.AreEqual(websiteName, website.Name);
+                Assert.IsNotNull(website.HostNames.FirstOrDefault(hostname => hostname.Equals(string.Format("{0}.{1}", websiteName, suffix))));
+                created = true;
+                return website;
+            };
+
+            // Test
+            MockCommandRuntime mockRuntime = new MockCommandRuntime();
+            NewAzureWebsiteCommand newAzureWebsiteCommand = new NewAzureWebsiteCommand(channel)
+            {
+                ShareChannel = true,
+                CommandRuntime = mockRuntime,
+                Name = websiteName,
+                CurrentSubscription = new SubscriptionData { SubscriptionId = base.subscriptionId },
+                WebsitesClient = clientMock.Object
+            };
+
+            newAzureWebsiteCommand.ExecuteCmdlet();
+            Assert.IsTrue(created);
+            Assert.AreEqual<string>(websiteName, (mockRuntime.OutputPipeline[0] as SiteWithConfig).Name);
+            clientMock.Verify(f => f.GetDefaultLocation(), Times.Once());
         }
     }
 }

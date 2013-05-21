@@ -25,6 +25,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
     using Storage;
     using Helpers;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
     [Cmdlet(VerbsCommon.New, "AzureVM", DefaultParameterSetName = "ExistingService"), OutputType(typeof(ManagementOperationContext))]
     public class NewAzureVMCommand : IaaSDeploymentManagementCmdletBase
@@ -140,15 +141,15 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             CloudStorageAccount currentStorage = null;
             try
             {
-                currentStorage = currentSubscription.GetCurrentStorageAccount(Channel);
+                currentStorage = currentSubscription.GetCurrentStorageAccount();
             }
             catch (ServiceManagementClientException) // couldn't access
             {
-                throw new ArgumentException("CurrentStorageAccount is not accessible. Ensure the current storage account is accessible and in the same location or affinity group as your cloud service.");
+                throw new ArgumentException(Resources.CurrentStorageAccountIsNotAccessible);
             }
             if (currentStorage == null) // not set
             {
-                throw new ArgumentException("CurrentStorageAccount is not set. Use Set-AzureSubscription subname -CurrentStorageAccount storage account to set it.");
+                throw new ArgumentException(Resources.CurrentStorageAccountIsNotSet);
             }
 
 
@@ -194,9 +195,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                     {
                         if(!CertUtils.HasExportablePrivateKey(vm.WinRMCertificate))
                         {
-                            throw new ArgumentException("WinRMCertificate needs to have an exportable private key.");
+                            throw new ArgumentException(Resources.WinRMCertificateDoesNotHaveExportablePrivateKey);
                         }
-                        var operationDescription = string.Format("{0} - Uploading WinRMCertificate: {1}", CommandRuntime, vm.WinRMCertificate.Thumbprint);
+                        var operationDescription = string.Format(Resources.AzureVMUploadingWinRMCertificate, CommandRuntime, vm.WinRMCertificate.Thumbprint);
                         var certificateFile = CertUtils.Create(vm.WinRMCertificate);
                         ExecuteClientActionInOCS(null, operationDescription, s => this.Channel.AddCertificates(s, this.ServiceName, certificateFile));
                     }
@@ -208,7 +209,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                                                                 };
                     foreach (var current in certificateFilesWithThumbprint.ToList())
                     {
-                        var operationDescription = string.Format("{0} - Uploading Certificate: {1}", CommandRuntime, current.Thumbprint);
+                        var operationDescription = string.Format(Resources.AzureVMCommandUploadingCertificate, CommandRuntime, current.Thumbprint);
                         ExecuteClientActionInOCS(null, operationDescription, s => this.Channel.AddCertificates(s, this.ServiceName, current.CertificateFile));
                     }
                 }
@@ -225,7 +226,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                     {
                         var deployment = new Deployment
                         {
-                            DeploymentSlot = "Production",
+                            DeploymentSlot = DeploymentSlotType.Production,
                             Name = this.DeploymentName ?? this.ServiceName,
                             Label = this.DeploymentLabel ?? this.ServiceName,
                             RoleList = new RoleList(new List<Role> { persistentVMs[0] }),
@@ -241,7 +242,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                             }
                         }
 
-                        var operationDescription = string.Format("{0} - Create Deployment with VM {1}", CommandRuntime, persistentVMs[0].RoleName);
+                        var operationDescription = string.Format(Resources.AzureVMCommandCreateDeploymentWithVM, CommandRuntime, persistentVMs[0].RoleName);
                         ExecuteClientAction(deployment, operationDescription, s => this.Channel.CreateDeployment(s, this.ServiceName, deployment));
 
                         if(this.WaitForBoot.IsPresent)
@@ -253,7 +254,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                     {
                         if (ex.HttpStatus == HttpStatusCode.NotFound)
                         {
-                            throw new Exception("Cloud Service does not exist. Specify -Location or -AffinityGroup to create one.");
+                            throw new Exception(Resources.ServiceDoesNotExistSpecifyLocationOrAffinityGroup);
                         }
                         else
                         {
@@ -269,7 +270,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (this.VNetName != null || this.DnsSettings != null || !string.IsNullOrEmpty(this.DeploymentLabel) || !string.IsNullOrEmpty(this.DeploymentName))
                 {
-                    WriteWarning("VNetName, DnsSettings, DeploymentLabel or DeploymentName Name can only be specified on new deployments.");
+                    WriteWarning(Resources.VNetNameDnsSettingsDeploymentLabelDeploymentNameCanBeSpecifiedOnNewDeployments);
                 }
             }
 
@@ -282,7 +283,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
 
             for (int i = startingVM; i < persistentVMs.Count; i++)
             {
-                var operationDescription = string.Format("{0} - Create VM {1}", CommandRuntime, persistentVMs[i].RoleName);
+                var operationDescription = string.Format(Resources.AzureVMCommandCreateVM, CommandRuntime, persistentVMs[i].RoleName);
                 ExecuteClientActionInOCS(persistentVMs[i],operationDescription, s => this.Channel.AddRole(s, this.ServiceName, this.DeploymentName ?? this.ServiceName, persistentVMs[i]));
             }
 
@@ -325,8 +326,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
                 {
                     if (currentStorage == null)
                     {
-                        throw new ArgumentException(
-                            "CurrentStorageAccount is not set or not accessible. Use Set-AzureSubscription subname -CurrentStorageAccount storageaccount to set it.");
+                        throw new ArgumentException(Resources.CurrentStorageAccountIsNotSet);
                     }
 
                     DateTime dateTimeCreated = DateTime.Now;
@@ -390,14 +390,14 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (string.IsNullOrEmpty(Location) && string.IsNullOrEmpty(AffinityGroup))
                 {
-                    throw new ArgumentException("Location or AffinityGroup is required when creating a new Cloud Service.");
+                    throw new ArgumentException(Resources.LocationOrAffinityGroupRequiredWhenCreatingNewCloudService);
                 }
             }
             else
             {
                 if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(AffinityGroup))
                 {
-                    throw new ArgumentException("Location or AffinityGroup can only be specified when creating a new cloud service.");
+                    throw new ArgumentException(Resources.LocationOrAffinityGroupCanOnlyBeSpecifiedWhenNewCloudService);
                 }
             }
 
@@ -405,7 +405,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (!string.IsNullOrEmpty(this.VNetName) && string.IsNullOrEmpty(this.AffinityGroup))
                 {
-                    throw new ArgumentException("Must specify the same affinity group as the virtual network is deployed to.");
+                    throw new ArgumentException(Resources.MustSpecifySameAffinityGroupAsVirtualNetwork);
                 }
             }
 
@@ -413,7 +413,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 if (this.DnsSettings != null && string.IsNullOrEmpty(this.VNetName))
                 {
-                    throw new ArgumentException("VNetName is required when specifying DNS Settings.");
+                    throw new ArgumentException(Resources.VNetNameRequiredWhenSpecifyingDNSSettings);
                 }
             }
 
@@ -425,7 +425,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
 
                 if (provisioningConfiguration == null && pVM.OSVirtualHardDisk.SourceImageName != null)
                 {
-                    throw new ArgumentException(string.Format("Virtual Machine {0} is missing provisioning configuration", pVM.RoleName));
+                    throw new ArgumentException(string.Format(Resources.VMMissingProvisioningConfiguration, pVM.RoleName));
                 }
             }
         }
@@ -437,9 +437,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.PersistentVMs
             {
                 try
                 {
-                    WriteVerboseWithTimestamp(string.Format("Begin Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.AzureVMBeginOperation, CommandRuntime.ToString()));
                     AvailabilityResponse response = this.RetryCall(s => this.Channel.IsDNSAvailable(s, serviceName));
-                    WriteVerboseWithTimestamp(string.Format("Completed Operation: {0}", CommandRuntime.ToString()));
+                    WriteVerboseWithTimestamp(string.Format(Resources.AzureVMCompletedOperation, CommandRuntime.ToString()));
                     isPresent = !response.Result;
                 }
                 catch (ServiceManagementClientException ex)

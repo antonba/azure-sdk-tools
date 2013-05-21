@@ -23,6 +23,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
     using System.ServiceModel.Channels;
     using System.Text;
     using System.Threading;
+    using System.Security.Permissions;
     using Microsoft.WindowsAzure.Storage.Auth;
     using Microsoft.WindowsAzure.Storage.Blob;
     using Sync.Download;
@@ -71,6 +72,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
 
         public LocalMetaData OperationMetaData
         {
+            [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
             get
             {
                 if (this.operationMetaData == null)
@@ -104,6 +106,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Need to keep UploadContext till the end of upload")]
         public UploadContext Create()
         {
             AssertIfValidhVhd(localVhd);
@@ -154,8 +157,7 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
             {
                 if(!completed && context != null)
                 {
-                    context.SingleInstanceMutex.ReleaseMutex();
-                    context.SingleInstanceMutex.Close();
+                    context.Dispose();
                 }
             }
             return context;
@@ -179,32 +181,24 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
             {
                 IEnumerable<IndexRange> ranges = vds.Extents.Select(e => e.Range).ToArray();
 
-                using(var bs = new BufferedStream(vds))
+                var bs = new BufferedStream(vds);
+                if (resume)
                 {
-                    if (resume)
-                    {
-                        var alreadyUploadedRanges = context.DestinationBlob.GetPageRanges().Select(pr => new IndexRange(pr.StartOffset, pr.EndOffset));
-                        ranges = IndexRange.SubstractRanges(ranges, alreadyUploadedRanges);
-                        context.AlreadyUploadedDataSize = alreadyUploadedRanges.Sum(ir => ir.Length);
-                    }
-                    var uploadableRanges = IndexRangeHelper.ChunkRangesBySize(ranges, PageSizeInBytes).ToArray();
-                    if(vds.DiskType == DiskType.Fixed)
-                    {
-                        var nonEmptyUploadableRanges = GetNonEmptyRanges(bs, uploadableRanges).ToArray();
-                        context.UploadableDataSize = nonEmptyUploadableRanges.Sum(r => r.Length);
-                        context.UploadableRanges = nonEmptyUploadableRanges;
-                    }
-//                    else if(vds.RootDiskType == DiskType.Fixed)
-//                    {
-//                        var nonEmptyUploadableRanges = GetNonEmptyRanges(bs, uploadableRanges).ToArray();
-//                        context.UploadableDataSize = nonEmptyUploadableRanges.Sum(r => r.Length);
-//                        context.UploadableRanges = nonEmptyUploadableRanges;
-//                    }
-                    else
-                    {
-                        context.UploadableDataSize = uploadableRanges.Sum(r => r.Length);
-                        context.UploadableRanges = uploadableRanges;
-                    }
+                    var alreadyUploadedRanges = context.DestinationBlob.GetPageRanges().Select(pr => new IndexRange(pr.StartOffset, pr.EndOffset));
+                    ranges = IndexRange.SubstractRanges(ranges, alreadyUploadedRanges);
+                    context.AlreadyUploadedDataSize = alreadyUploadedRanges.Sum(ir => ir.Length);
+                }
+                var uploadableRanges = IndexRangeHelper.ChunkRangesBySize(ranges, PageSizeInBytes).ToArray();
+                if(vds.DiskType == DiskType.Fixed)
+                {
+                    var nonEmptyUploadableRanges = GetNonEmptyRanges(bs, uploadableRanges).ToArray();
+                    context.UploadableDataSize = nonEmptyUploadableRanges.Sum(r => r.Length);
+                    context.UploadableRanges = nonEmptyUploadableRanges;
+                }
+                else
+                {
+                    context.UploadableDataSize = uploadableRanges.Sum(r => r.Length);
+                    context.UploadableRanges = uploadableRanges;
                 }
             }
         }
@@ -288,17 +282,32 @@ namespace Microsoft.WindowsAzure.Management.Sync.Upload
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Need to keep Mutex open till the end of upload")]
         private static Mutex AcquireSingleInstanceMutex(Uri destinationBlobUri)
         {
             string mutexName = GetMutexName(destinationBlobUri);
 
-            var singleInstanceMutex = new Mutex(false, @"Global\" + mutexName);
-            if (!singleInstanceMutex.WaitOne(TimeSpan.FromSeconds(5), false))
+            bool throwing = true;
+            Mutex singleInstanceMutex = null;
+            try
             {
-                var message = String.Format("An upload is already in progress on this machine");
-                throw new InvalidOperationException(message);
+                singleInstanceMutex = new Mutex(false, @"Global\" + mutexName);
+                if (!singleInstanceMutex.WaitOne(TimeSpan.FromSeconds(5), false))
+                {
+                    var message = String.Format("An upload is already in progress on this machine");
+                    throw new InvalidOperationException(message);
+                }
+                throwing = false;
+                return singleInstanceMutex;
             }
-            return singleInstanceMutex;
+            finally
+            {
+                if(throwing && singleInstanceMutex != null)
+                {
+                    singleInstanceMutex.ReleaseMutex();
+                    singleInstanceMutex.Close();
+                }
+            }
         }
 
         private static string GetMutexName(Uri destinationBlobUri)

@@ -26,18 +26,15 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
 
     [TestClass]
     public class ServiceManagementTest
-    {
-        
+    {        
         protected const string serviceNamePrefix = "PSTestService";
         protected const string vmNamePrefix = "PSTestVM";
         protected const string password = "p@ssw0rd";
         protected const string username = "pstestuser";
-        protected const string defaultStorage = "defaultrtstore";
         protected static string localFile = Resource.Vhd;
-        protected const bool deleteDefaultStorageAccount = true;
+        protected const bool deleteDefaultStorageAccount = false;
         protected static string vnetConfigFilePath = Directory.GetCurrentDirectory() + "\\vnetconfig.netcfg";
        
-
         protected static ServiceManagementCmdletTestHelper vmPowershellCmdlets;
         protected static SubscriptionData defaultAzureSubscription;
         protected static StorageServiceKeyOperationContext storageAccountKey;
@@ -78,9 +75,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
 
         public static void SetDefaultStorage()
         {
-            if (!string.IsNullOrEmpty(GetDefaultStorage(defaultStorage, locationName)))
+            if (!string.IsNullOrEmpty(GetDefaultStorage(CredentialHelper.DefaultStorageName, CredentialHelper.Location)))
             {
-                defaultAzureSubscription = vmPowershellCmdlets.SetAzureSubscription(defaultAzureSubscription.SubscriptionName, defaultStorage);
+                defaultAzureSubscription = vmPowershellCmdlets.SetAzureSubscription(defaultAzureSubscription.SubscriptionName, CredentialHelper.DefaultStorageName);
 
                 storageAccountKey = vmPowershellCmdlets.GetAzureStorageAccountKey(defaultAzureSubscription.CurrentStorageAccount);
                 Assert.AreEqual(defaultAzureSubscription.CurrentStorageAccount, storageAccountKey.StorageAccountName);
@@ -97,13 +94,17 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             Collection<StorageServicePropertiesOperationContext> storageAccounts = vmPowershellCmdlets.GetAzureStorageAccount(null);
             foreach (var storageAccount in storageAccounts)
             {
-               if (storageAccount.StorageAccountName == storageName)
+                if (storageAccount.StorageAccountName == storageName)
+                {
                     return storageAccount.StorageAccountName;
+                }
             }
 
             var account = vmPowershellCmdlets.NewAzureStorageAccount(storageName, locName);
             if (account.StorageAccountName == storageName)
+            {
                 return account.StorageAccountName;
+            }
 
             return null;
         }
@@ -113,22 +114,23 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             vmPowershellCmdlets = new ServiceManagementCmdletTestHelper();
             CredentialHelper.GetTestSettings(Resource.TestSettings);
 
-            // Temporary fix (Issue #1430)
-            vmPowershellCmdlets.ImportAzurePublishSettingsFile(CredentialHelper.PublishSettingsFile);
             vmPowershellCmdlets.RemoveAzureSubscriptions();
-
             vmPowershellCmdlets.ImportAzurePublishSettingsFile(CredentialHelper.PublishSettingsFile);
 
             if (string.IsNullOrEmpty(CredentialHelper.DefaultSubscriptionName))
             {                                
                 defaultAzureSubscription = vmPowershellCmdlets.GetCurrentAzureSubscription();
+                if (string.IsNullOrEmpty(Resource.DefaultSubscriptionName))
+                {
+                    CredentialHelper.DefaultSubscriptionName = defaultAzureSubscription.SubscriptionName;
+                }
             }
             else
             {
                 defaultAzureSubscription = vmPowershellCmdlets.SetDefaultAzureSubscription(CredentialHelper.DefaultSubscriptionName);
             }                         
 
-            locationName = vmPowershellCmdlets.GetAzureLocationName(new[] { CredentialHelper.Location }, false); // Get-AzureLocation
+            locationName = vmPowershellCmdlets.GetAzureLocationName(new[] { CredentialHelper.Location }); // Get-AzureLocation
             if (String.IsNullOrEmpty(locationName))
             {
                 Console.WriteLine("No location is selected!");
@@ -136,7 +138,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             Console.WriteLine("Location Name: {0}", locationName);
 
             if (defaultAzureSubscription.CurrentStorageAccount == null)
+            {
                 SetDefaultStorage();
+            }
 
             imageName = vmPowershellCmdlets.GetAzureVMImageName(new[] { "Windows", "testvmimage" }, false); // Get-AzureVMImage
             if (String.IsNullOrEmpty(imageName))
@@ -147,8 +151,6 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
 
         }
         
-
-
         protected void StartTest(string testname, DateTime testStartTime)
         {            
             Console.WriteLine("{0} test starts at {1}", testname, testStartTime);
@@ -161,7 +163,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             if (defaultAzureSubscription != null)
             {
                 Retry(String.Format("Get-AzureDisk | Where {{$_.DiskName.Contains(\"{0}\")}} | Remove-AzureDisk -DeleteVhd", serviceNamePrefix), "in use");
-                if (deleteDefaultStorageAccount && !string.IsNullOrEmpty(defaultAzureSubscription.CurrentStorageAccount))
+                if (deleteDefaultStorageAccount)
                 {
                     vmPowershellCmdlets.RemoveAzureStorageAccount(defaultAzureSubscription.CurrentStorageAccount);
                 }
@@ -197,6 +199,14 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
                     }
                 }
             }
+        }
+
+        protected static void ReImportSubscription()
+        {
+            // Re-import the subscription.
+            vmPowershellCmdlets.ImportAzurePublishSettingsFile();
+            vmPowershellCmdlets.SetDefaultAzureSubscription(CredentialHelper.DefaultSubscriptionName);
+            vmPowershellCmdlets.SetAzureSubscription(defaultAzureSubscription.SubscriptionName, defaultAzureSubscription.CurrentStorageAccount);
         }
     }
 }

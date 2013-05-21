@@ -10,73 +10,46 @@
   <logwarning>true</logwarning>
   <logerror>true</logerror>
   <AzureSubscriptionPath>
-    <!--Azure subscription file path-->
+      <!--Azure subscription file path-->
   </AzureSubscriptionPath>
   <AzureSubscriptionName>
-    <!--Azure subscription name on the specified azure subscription file-->
+      <!--Azure subscription name on the specified azure subscription file-->
   </AzureSubscriptionName>
-  <SubscriptionStorageAccountName>
-    <!--Default storage account name on the specified azure subscription file-->
-  </SubscriptionStorageAccountName>
   <StorageAccountName>
-    <!--Storage Account name-->
+      <!--Storage Account name-->
+      <!--Please make sure this storage account is available in azure subscription-->
   </StorageAccountName>
   <StorageAccountKey>
-    <!--Storage Account Key-->
+      <!--Storage Account Key-->
   </StorageAccountKey>
+  <StorageEndPoint>
+      <!--Storage End Point-->
+      core.windows.net
+  </StorageEndPoint>
+  <SecondaryStorageAccountName>
+      <!--Storage Account name-->
+  </SecondaryStorageAccountName>
+  <SecondaryStorageAccountKey>
+      <!--Storage Account Key-->
+  </SecondaryStorageAccountKey>
+  <SecondaryStorageEndPoint>
+      <!--Storage End Point-->
+      core.windows.net
+  </SecondaryStorageEndPoint>
   <BigFileUri>
-    <!--A big file uri on the public web which could make azure take serveral(at least 3) minutes to copy.-->
+      <!--A big file uri on the public web which could make azure take serveral(at least 3) minutes to copy.-->
   </BigFileUri>
   <HttpsCopyHosts>
     <!--Azure will use https to copy blob no matter what you set, please split your host using space.-->
-    windows.net windowsazure.com
+    windows.net
   </HttpsCopyHosts>
-  <StorageConnectionString>
-    <!--Storage connection string-->
-  </StorageConnectionString>
-  <StorageConnectionString2>
-    <!--Secondary storage connection string-->
-  </StorageConnectionString2>
   <ModuleFilePath>
     <!--Custom Module File Path-->
     <!--Our tests run against the current powershell environment and this module file. Please make sure storage powershell could be reached in one of them-->
     <!--For example, C:\Program Files (x86)\Microsoft SDKs\Windows Azure\PowerShell\Azure\Azure.psd1-->
   </ModuleFilePath>
-  <BlockFilePath>Data\upload\中文路径path\Windows Azure是微软基于云计算的操作系统.txt</BlockFilePath>
-  <PageFilePath>Data\upload\page.bin</PageFilePath>
-  <DownloadDirPath>Data\download</DownloadDirPath>
-  <HTTPSConnectionString>
-    <!--Connection string using https protocol-->
-  </HTTPSConnectionString>
-  <HTTPConnectionString>
-    <!--Connection string using http protocol-->
-  </HTTPConnectionString>
-  <HTTPSEnvConnectionString>
-    <!--Environment variable vaule connection string using https protocol.-->
-  </HTTPSEnvConnectionString>
-  <HTTPEnvConnectionString>
-    <!--Environment variable vaule Connection string using http protocol-->
-  </HTTPEnvConnectionString>
-  <DownloadDir>.\Data\download\getblobcontent\</DownloadDir>
-  <UploadDir>.\Data\upload\setblobcontent\</UploadDir>
+  <DownloadDir>.\Data\download\</DownloadDir>
+  <UploadDir>.\Data\upload\</UploadDir>
+  <TempDir>.\Data\temp\</TempDir>
   <EnvContextKey>AZURE_STORAGE_CONNECTION_STRING</EnvContextKey>
-  <TestClass name="CLITest.CLIBlobFunc">
-    <UploadDirPath>Data\upload</UploadDirPath>
-    <BlockFilePath>Data\upload\中文路径path\中文文件file.dat</BlockFilePath>
-    <PageFilePath>Data\upload\ConfigMgrAdminUISetup.log</PageFilePath>
-    <DownloadDirPath>Data\download</DownloadDirPath>
-  </TestClass>
-  <TestClass name="CLITest.Functional.StorageContext">
-    <StorageConnectionString1>
-      <!--Storage connection string-->
-    </StorageConnectionString1>
-    <StorageConnectionString2>
-      <!--Storage connection string-->
-      <!--Please make sure this is not equal to StorageConnectionString1-->
-    </StorageConnectionString2>
-  </TestClass>
-  <TestClass name="CLITest.CLIContextFunc">
-    <BlockFilePath>Data\upload\中文路径path\中文文件file.dat</BlockFilePath>
-    <PageFilePath>Data\upload\ConfigMgrAdminUISetup.log</PageFilePath>
-  </TestClass>
 </TestConfig>

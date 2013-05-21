@@ -35,9 +35,9 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                 try
                 {
                     // Check if there is a default subscription available
-                    GlobalComponents globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory);
+                    GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory);
                     currentSubscription =
-                        globalComponents.Subscriptions.Values.FirstOrDefault(subscription => subscription.IsDefault);
+                        globalSettingsManager.Subscriptions.Values.FirstOrDefault(subscription => subscription.IsDefault);
 
                     if (currentSubscription != null)
                     {
@@ -62,10 +62,10 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                 throw new ArgumentNullException("subscriptionName", Resources.InvalidSubscriptionName);
             }
 
-            var globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
+            var globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
 
             SubscriptionData subscriptionData;
-            if (!globalComponents.Subscriptions.TryGetValue(subscriptionName, out subscriptionData))
+            if (!globalSettingsManager.Subscriptions.TryGetValue(subscriptionName, out subscriptionData))
             {
                 throw new ArgumentException(string.Format(
                     CultureInfo.InvariantCulture,
@@ -107,15 +107,15 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
 
         public static IDictionary<string, SubscriptionData> GetSubscriptions(this PSCmdlet cmdlet, string subscriptionDataFile)
         {
-            return GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile).Subscriptions;
+            return GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile).Subscriptions;
         }
 
         public static void SetDefaultSubscription(this PSCmdlet cmdlet, string subscriptionName, string subscriptionDataFile)
         {
-            GlobalComponents globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
-            if (globalComponents.Subscriptions.Count > 1)
+            GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
+            if (globalSettingsManager.Subscriptions.Count > 1)
             {
-                var defaultSubscription = globalComponents.Subscriptions.Values.FirstOrDefault(subscription => subscription.IsDefault);
+                var defaultSubscription = globalSettingsManager.Subscriptions.Values.FirstOrDefault(subscription => subscription.IsDefault);
                 if (defaultSubscription != null)
                 {
                     defaultSubscription.IsDefault = false;
@@ -123,24 +123,24 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
 
                 if (subscriptionName != null)
                 {
-                    defaultSubscription = globalComponents.Subscriptions.Values.First(subscription => subscription.SubscriptionName == subscriptionName);
+                    defaultSubscription = globalSettingsManager.Subscriptions.Values.First(subscription => subscription.SubscriptionName == subscriptionName);
                     defaultSubscription.IsDefault = true;
                 }
                 else
                 {
-                    defaultSubscription = globalComponents.Subscriptions.Values.First();
+                    defaultSubscription = globalSettingsManager.Subscriptions.Values.First();
                     defaultSubscription.IsDefault = true;
                 }
 
-                globalComponents.SaveSubscriptions();
+                globalSettingsManager.SaveSubscriptions();
             }
         }
 
         public static void UpdateSubscriptions(this PSCmdlet cmdlet, IDictionary<string, SubscriptionData> subscriptionsData, string subscriptionDataFile)
         {
-            GlobalComponents globalComponents = GlobalComponents.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
-            globalComponents.SubscriptionManager.Subscriptions = subscriptionsData;
-            globalComponents.SaveSubscriptions();
+            GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.Load(GlobalPathInfo.GlobalSettingsDirectory, subscriptionDataFile);
+            globalSettingsManager.SubscriptionManager.Subscriptions = subscriptionsData;
+            globalSettingsManager.SaveSubscriptions();
         }
     }
 }

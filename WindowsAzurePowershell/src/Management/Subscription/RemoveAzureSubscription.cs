@@ -44,20 +44,20 @@ namespace Microsoft.WindowsAzure.Management.Subscription
         public void RemoveSubscriptionProcess(string subscriptionName, string subscriptionsDataFile)
         {
             // Import subscriptions from subscriptions file
-            var globalComponents = GlobalComponents.Load(
+            var globalSettingsManager = GlobalSettingsManager.Load(
                 GlobalPathInfo.GlobalSettingsDirectory,
                 this.ResolvePath(subscriptionsDataFile));
 
-            if (globalComponents.Subscriptions.ContainsKey(subscriptionName))
+            if (globalSettingsManager.Subscriptions.ContainsKey(subscriptionName))
             {
-                var subscription = globalComponents.Subscriptions[subscriptionName];
+                var subscription = globalSettingsManager.Subscriptions[subscriptionName];
 
                 // Warn the user if the removed subscription is the default one.
                 if (subscription.IsDefault)
                 {
                     WriteWarning(Resources.RemoveDefaultSubscription);
                     // Change default to another one
-                    var newSubscriptionDefault = globalComponents.Subscriptions.Values.FirstOrDefault(s => !s.SubscriptionId.Equals(subscription.SubscriptionId));
+                    var newSubscriptionDefault = globalSettingsManager.Subscriptions.Values.FirstOrDefault(s => !s.SubscriptionId.Equals(subscription.SubscriptionId));
                     if (newSubscriptionDefault != null)
                     {
                         newSubscriptionDefault.IsDefault = true;
@@ -74,8 +74,8 @@ namespace Microsoft.WindowsAzure.Management.Subscription
                     this.ClearCurrentSubscription();
                 }
 
-                globalComponents.Subscriptions.Remove(subscriptionName);
-                globalComponents.SaveSubscriptions();
+                globalSettingsManager.Subscriptions.Remove(subscriptionName);
+                globalSettingsManager.SaveSubscriptions();
 
                 if (PassThru.IsPresent)
                 {

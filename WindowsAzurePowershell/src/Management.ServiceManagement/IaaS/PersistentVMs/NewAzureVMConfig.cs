@@ -20,8 +20,8 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System.Management.Automation;
     using WindowsAzure.ServiceManagement;
     using Model;
-    using Common;
     using Utilities.Common;
+    using Properties;
 
     [Cmdlet(VerbsCommon.New, "AzureVMConfig", DefaultParameterSetName = "ImageName"), OutputType(typeof(PersistentVM))]
     public class NewAzureVMConfigCommand : PSCmdlet
@@ -152,7 +152,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             SubscriptionData currentSubscription = this.GetCurrentSubscription();
             if ((currentSubscription == null || currentSubscription.CurrentStorageAccount == null) && MediaLocation == null)
             {
-                throw new ArgumentException("Must specify MediaLocation or set a current storage account using Set-AzureSubscription.");
+                throw new ArgumentException(Resources.MustSpecifyMediaLocationOrHaveCurrentStorageAccount);
             }
         }
     }

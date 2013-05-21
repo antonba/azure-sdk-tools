@@ -21,8 +21,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
     using System.Linq;
     using System.Management.Automation;
     using IaaS;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Set, "AzureEndpoint", DefaultParameterSetName = "NoLB"), OutputType(typeof(IPersistentVM))]
     public class SetAzureEndpoint : VirtualMachineConfigurationCmdletBase
@@ -131,7 +132,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
             {
                 ThrowTerminatingError(
                     new ErrorRecord(
-                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "An endpoint named '{0}' cannot be found in the configuration of this VM. Use New-ExternalEndpoint to define it.", this.Name)),
+                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.EndpointCanNotBeFoundInVMConfigurationInSetAzureEndpoint, this.Name)),
                             string.Empty,
                             ErrorCategory.InvalidData,
                             null));
@@ -222,7 +223,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
                 {
                     if (!string.IsNullOrEmpty(ProbePath))
                     {
-                        throw new ArgumentException("ProbePath not valid with tcp");
+                        throw new ArgumentException(Resources.ProbePathIsNotValidWithTcp);
                     }
                 }
 
@@ -230,24 +231,24 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
                 {
                     if (string.IsNullOrEmpty(ProbePath))
                     {
-                        throw new ArgumentException("ProbePath is required for http");
+                        throw new ArgumentException(Resources.ProbePathIsRequiredForHttp);
                     }
                 }
             }
 
             if (LocalPort < 0 || LocalPort > 65535)
             {
-                throw new ArgumentException("Ports must be in the range of 0 - 65535");
+                throw new ArgumentException(Resources.PortsNotInRangeInSetAzureEndpoint);
             }
 
             if (PublicPort != null && (PublicPort < 0 || PublicPort > 65535))
             {
-                throw new ArgumentException("Ports must be in the range of 0 - 65535");
+                throw new ArgumentException(Resources.PortsNotInRangeInSetAzureEndpoint);
             }
 
             if (ProbePort < 0 || ProbePort > 65535)
             {
-                throw new ArgumentException("Ports must be in the range of 0 - 65535");
+                throw new ArgumentException(Resources.PortsNotInRangeInSetAzureEndpoint);
             }
         }
     }

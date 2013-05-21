@@ -104,7 +104,7 @@ Tests using New-AzureStorageContainer with invalid container name
 function Test-NewExistsAzureStorageContainerWithInvalidContainerName
 {
     $invalidName = "a";
-    Assert-Throws {New-AzureStorageContainer $invalidName} "Container name '$invalidName' is invalid."
+    Assert-Throws {New-AzureStorageContainer $invalidName}
 }
 
 <#

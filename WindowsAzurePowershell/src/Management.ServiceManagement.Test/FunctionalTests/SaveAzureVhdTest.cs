@@ -42,6 +42,11 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.FunctionalTes
             }
 
             vhdBlobLocation = blobUrlRoot + vhdBlob;
+
+            if (string.IsNullOrEmpty(localFile))
+            {
+                Assert.Inconclusive("Upload vhd is not set!");
+            }
             try
             {
                 vmPowershellCmdlets.AddAzureVhd(new FileInfo(localFile), vhdBlobLocation);

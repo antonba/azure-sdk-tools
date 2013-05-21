@@ -23,6 +23,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using Common;
     using Model;
     using Helpers;
+    using Properties;
 
     /// <summary>
     /// Updates a persistent VM object with a provisioning configuration.
@@ -208,22 +209,22 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
             
             if (string.Compare(ParameterSetName, "Linux", StringComparison.OrdinalIgnoreCase) == 0 && ValidationHelpers.IsLinuxPasswordValid(Password) == false)
             {
-                throw new ArgumentException("Password does not meet complexity requirements.");
+                throw new ArgumentException(Resources.PasswordNotComplexEnough);
             }
 
             if ((string.Compare(ParameterSetName, "Windows", StringComparison.OrdinalIgnoreCase) == 0 || string.Compare(ParameterSetName, "WindowsDomain", StringComparison.OrdinalIgnoreCase) == 0) && ValidationHelpers.IsWindowsPasswordValid(Password) == false)
             {
-                throw new ArgumentException("Password does not meet complexity requirements.");
+                throw new ArgumentException(Resources.PasswordNotComplexEnough);
             }
 
             if (string.Compare(ParameterSetName, "Linux", StringComparison.OrdinalIgnoreCase) == 0 && ValidationHelpers.IsLinuxHostNameValid(vm.RoleName) == false)
             {
-                throw new ArgumentException("Hostname is invalid.");
+                throw new ArgumentException(Resources.InvalidHostName);
             }
 
             if ((string.Compare(ParameterSetName, "Windows", StringComparison.OrdinalIgnoreCase) == 0 || string.Compare(ParameterSetName, "WindowsDomain", StringComparison.OrdinalIgnoreCase) == 0) && ValidationHelpers.IsWindowsComputerNameValid(vm.RoleName) == false)
             {
-                throw new ArgumentException("Computer Name is invalid.");
+                throw new ArgumentException(Resources.InvalidComputerName);
             }
         }
     }

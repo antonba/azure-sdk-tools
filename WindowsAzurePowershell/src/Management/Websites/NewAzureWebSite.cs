@@ -24,6 +24,7 @@ namespace Microsoft.WindowsAzure.Management.Websites
     using System.Text.RegularExpressions;
     using Microsoft.WindowsAzure.Management.Utilities.Common;
     using Microsoft.WindowsAzure.Management.Utilities.Properties;
+    using Microsoft.WindowsAzure.Management.Utilities.Websites;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Common;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Services;
     using Microsoft.WindowsAzure.Management.Utilities.Websites.Services.Github;
@@ -36,6 +37,8 @@ namespace Microsoft.WindowsAzure.Management.Websites
     [Cmdlet(VerbsCommon.New, "AzureWebsite"), OutputType(typeof(SiteWithConfig))]
     public class NewAzureWebsiteCommand : WebsiteContextBaseCmdlet, IGithubCmdlet
     {
+        public IWebsitesClient WebsitesClient { get; set; }
+
         [Parameter(Position = 1, Mandatory = false, ValueFromPipelineByPropertyName = true, HelpMessage = "The geographic region to create the website.")]
         [ValidateNotNullOrEmpty]
         public string Location
@@ -218,6 +221,9 @@ namespace Microsoft.WindowsAzure.Management.Websites
         [EnvironmentPermission(SecurityAction.LinkDemand, Unrestricted = true)]
         public override void ExecuteCmdlet()
         {
+            WebsitesClient = WebsitesClient ?? new WebsitesClient(CurrentSubscription, WriteDebug);
+            string suffix = WebsitesClient.GetWebsiteDnsSuffix();
+
             if (Git && GitHub)
             {
                 throw new Exception("Please run the command with either -Git or -GitHub options. Not both.");
@@ -246,11 +252,9 @@ namespace Microsoft.WindowsAzure.Management.Websites
                 webspace = webspaceList.FirstOrDefault();
                 if (webspace == null)
                 {
-                    // Use east us
                     webspace = new WebSpace
                     {
-                        Name = "eastuswebspace",
-                        GeoRegion = "East US",
+                        GeoRegion = WebsitesClient.GetDefaultLocation(),
                         Subscription = CurrentSubscription.SubscriptionId,
                         Plan = "VirtualDedicatedPlan"
                     };
@@ -276,7 +280,7 @@ namespace Microsoft.WindowsAzure.Management.Websites
             SiteWithWebSpace website = new SiteWithWebSpace
             {
                 Name = Name,
-                HostNames = new[] { Name + General.AzureWebsiteHostNameSuffix },
+                HostNames = new[] { string.Format("{0}.{1}", Name, suffix) },
                 WebSpace = webspace.Name,
                 WebSpaceToCreate = webspace
             };

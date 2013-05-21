@@ -45,42 +45,73 @@ namespace Microsoft.WindowsAzure.Management.Sync
             InitilizeProgressTimer();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Lifetime of timer is bound to ProgressTracker")]
         private void InitilizeProgressTimer()
         {
             stopWatch.Start();
-            progressTimer = new Timer
+            bool throwing = false;
+            try
             {
-                AutoReset = false,
-                Interval = progressInterval.TotalMilliseconds
-            };
-            progressTimerOnElapsed = (sender, args) =>
-            {
-                ProgressRecord pr;
-                if (progressStatus.TryGetProgressRecord(out pr))
+                progressTimer = new Timer
                 {
-                    this.progress(pr);
-                }
+                    AutoReset = false,
+                    Interval = progressInterval.TotalMilliseconds
+                };
+                progressTimerOnElapsed = (sender, args) =>
+                {
+                    ProgressRecord pr;
+                    if (progressStatus.TryGetProgressRecord(out pr))
+                    {
+                        this.progress(pr);
+                    }
+                    progressTimer.Enabled = true;
+                };
+                progressTimer.Elapsed += progressTimerOnElapsed;
                 progressTimer.Enabled = true;
-            };
-            progressTimer.Elapsed += progressTimerOnElapsed;
-            progressTimer.Enabled = true;
+            }
+            catch (Exception)
+            {
+                throwing = true;
+                throw;
+            }
+            finally
+            {
+                if(throwing && progressTimer != null)
+                {
+                    progressTimer.Elapsed -= progressTimerOnElapsed;
+                    progressTimer.Enabled = false;
+                    progressTimer.Dispose();
+                    progressTimer = null;
+                }
+            }
         }
 
+
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             if (isDisposed)
             {
                 return;
             }
-
-            progressTimer.Elapsed -= progressTimerOnElapsed;
-            progressTimer.Enabled = false;
-            stopWatch.Stop();
-            if(stopWatch.Elapsed != TimeSpan.Zero)
+            if(disposing)
             {
-                this.complete(stopWatch.Elapsed);
+                progressTimer.Elapsed -= progressTimerOnElapsed;
+                progressTimer.Enabled = false;
+                stopWatch.Stop();
+                if (stopWatch.Elapsed != TimeSpan.Zero)
+                {
+                    this.complete(stopWatch.Elapsed);
+                }
+                progressTimer.Dispose();
+                this.isDisposed = true;
             }
-            this.isDisposed = true;
         }
+
     }
 }

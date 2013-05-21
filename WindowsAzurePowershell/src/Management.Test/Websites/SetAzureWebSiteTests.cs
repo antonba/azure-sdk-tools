@@ -35,8 +35,11 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
         {
             const string websiteName = "website1";
             const string webspaceName = "webspace";
+            const string suffix = "azurewebsites.com";
 
             // Setup
+            Mock<IWebsitesClient> clientMock = new Mock<IWebsitesClient>();
+            clientMock.Setup(f => f.GetWebsiteDnsSuffix()).Returns(suffix);
             bool updatedSite = false;
             bool updatedSiteConfig = false;
             SimpleWebsitesManagement channel = new SimpleWebsitesManagement();
@@ -63,7 +66,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
                 Site website = ar.Values["site"] as Site;
                 Assert.IsNotNull(website);
                 Assert.AreEqual(websiteName, website.Name);
-                Assert.IsTrue(website.HostNames.Any(hostname => hostname.Equals(websiteName + General.AzureWebsiteHostNameSuffix)));
+                Assert.IsTrue(website.HostNames.Any(hostname => hostname.Equals(string.Format("{0}.{1}", websiteName, suffix))));
                 Assert.IsNotNull(website.HostNames.Any(hostname => hostname.Equals("stuff.com")));
                 site.HostNames = website.HostNames;
                 updatedSite = true;
@@ -77,6 +80,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
                 Name = websiteName,
                 CurrentSubscription = new SubscriptionData { SubscriptionId = base.subscriptionId },
                 NumberOfWorkers = 3,
+                WebsitesClient = clientMock.Object
             };
 
             setAzureWebsiteCommand.ExecuteCmdlet();
@@ -93,6 +97,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Websites
                 Name = websiteName,
                 CurrentSubscription = new SubscriptionData { SubscriptionId = base.subscriptionId },
                 HostNames = new [] { "stuff.com" },
+                WebsitesClient = clientMock.Object
             };
 
             setAzureWebsiteCommand.ExecuteCmdlet();

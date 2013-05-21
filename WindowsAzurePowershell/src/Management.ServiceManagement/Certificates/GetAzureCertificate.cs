@@ -18,9 +18,10 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Certificates
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.WindowsAzure.Management.Utilities.Common;
+    using Utilities.Common;
     using Model;
     using WindowsAzure.ServiceManagement;
+    using Properties;
 
 
     /// <summary>
@@ -79,7 +80,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Certificates
             {
                 if (this.ThumbprintAlgorithm == null)
                 {
-                    throw new ArgumentNullException("ThumbprintAlgorithm", "You must specify the thumbprint algorithm.");
+                    throw new ArgumentNullException("ThumbprintAlgorithm", Resources.MissingThumbprintAlgorithm);
                 }
                 ExecuteClientActionInOCS(
                     null,

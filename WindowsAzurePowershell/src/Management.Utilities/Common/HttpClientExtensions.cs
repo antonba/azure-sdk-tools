@@ -15,8 +15,10 @@
 namespace Microsoft.WindowsAzure.Management.Utilities.Common
 {
     using System;
+    using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Xml.Serialization;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -55,7 +57,12 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
             }
         }
 
-        public static T GetJson<T>(this HttpClient client, string requestUri, Action<string> Logger)
+        private static T GetFormat<T>(
+            HttpClient client,
+            string requestUri,
+            Action<string> Logger,
+            Func<string, string> formatter,
+            Func<string, T> serializer)
         {
             AddUserAgent(client);
             LogRequest(
@@ -66,9 +73,44 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
                 Logger);
             HttpResponseMessage response = client.GetAsync(requestUri).Result;
             string content = response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
-            LogResponse(response.StatusCode.ToString(), response.Headers, General.TryFormatJson(content), Logger);
-            
-            return JsonConvert.DeserializeObject<T>(content);
+            LogResponse(response.StatusCode.ToString(), response.Headers, formatter(content), Logger);
+
+            return serializer(content);
+        }
+
+        private static string GetRawBody(
+            HttpClient client,
+            string requestUri,
+            Action<string> Logger,
+            Func<string, string> formatter)
+        {
+            AddUserAgent(client);
+            LogRequest(
+                HttpMethod.Get.Method,
+                client.BaseAddress + requestUri,
+                client.DefaultRequestHeaders,
+                string.Empty,
+                Logger);
+            HttpResponseMessage response = client.GetAsync(requestUri).Result;
+            string content = response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+            LogResponse(response.StatusCode.ToString(), response.Headers, formatter(content), Logger);
+
+            return content;
+        }
+
+        public static T GetJson<T>(this HttpClient client, string requestUri, Action<string> Logger)
+        {
+            return GetFormat<T>(client, requestUri, Logger, General.TryFormatJson, JsonConvert.DeserializeObject<T>);
+        }
+
+        public static string GetXml(this HttpClient client, string requestUri, Action<string> Logger)
+        {
+            return GetRawBody(client, requestUri, Logger, General.FormatXml);
+        }
+
+        public static T GetXml<T>(this HttpClient client, string requestUri, Action<string> Logger)
+        {
+            return GetFormat<T>(client, requestUri, Logger, General.FormatXml, General.DeserializeXmlString<T>);
         }
 
         public static HttpResponseMessage PostAsJsonAsync(

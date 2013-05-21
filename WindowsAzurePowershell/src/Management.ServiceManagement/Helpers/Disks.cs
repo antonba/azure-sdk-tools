@@ -12,14 +12,13 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using Microsoft.WindowsAzure.ServiceManagement;
-
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.Helpers
 {
     using System;
     using System.ServiceModel;
-    using Microsoft.WindowsAzure.Storage.Auth;
-    using Microsoft.WindowsAzure.Storage.Blob;
+    using Storage.Auth;
+    using Storage.Blob;
+    using WindowsAzure.ServiceManagement;
 
     public static class Disks
     {

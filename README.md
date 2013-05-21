@@ -1,10 +1,7 @@
 # Windows Azure PowerShell
 
-This repo contains a set of PowerShell cmddlets for developers and administrators to deploy and manage 
-Windows Azure applications. It includes the following:
-
-* Cmdlets for developers to deploy both node.js and PHP applications.
-* Cmdlets for IT Administrators to manage their Windows Azure environments.
+This repository contains a set of PowerShell cmdlets for developers and administrators to develop, deploy and manage 
+Windows Azure applications.
 
 For documentation on how to build and deploy applications to Windows Azure please see the [Windows Azure Developer Center](http://www.windowsazure.com/en-us/develop). For comprehensive documentation on the developer cmdlets see [How to use Windows Azure PowerShell](http://www.windowsazure.com/en-us/develop/nodejs/how-to-guides/powershell-cmdlets/). For comprehensive documentation on the full set of Windows Azure cmdlets see [Windows Azure Management Center](http://go.microsoft.com/fwlink/?linkID=254459&clcid=0x409).
 
@@ -30,6 +27,8 @@ For documentation on how to build and deploy applications to Windows Azure pleas
   * Manage storage account and access key.
   * Manage storage container and blob.
   * Copy storage blob.
+  * Manage storage table.
+  * Manage storage queue.
 * SQL Azure
   * CRUD support for database server, database and firewall rule
 * Service Bus
@@ -60,6 +59,7 @@ For detail descriptions and examples of the cmdlets, type
 * ```help azure``` to get all the cmdlets.
 * ```help node-dev``` to get all Node.js development related cmdlets.
 * ```help php-dev``` to get all PHP development related cmdlets.
+* ```help python-dev``` to get all Python development related cmdlets.
 * ```get-help <cmdlet name>``` to get the details of a specific cmdlet.
 
 # Getting Started

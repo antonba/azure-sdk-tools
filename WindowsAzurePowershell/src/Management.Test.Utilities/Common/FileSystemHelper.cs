@@ -285,7 +285,7 @@ namespace Microsoft.WindowsAzure.Management.Test.Utilities.Common
 
             AzureSdkPath = CreateDirectory("AzureSdk");
             GlobalPathInfo.GlobalSettingsDirectory = AzureSdkPath;
-            GlobalComponents globalComponents = GlobalComponents.CreateFromPublishSettings(
+            GlobalSettingsManager globalSettingsManager = GlobalSettingsManager.CreateFromPublishSettings(
                 GlobalPathInfo.GlobalSettingsDirectory,
                 null,
                 publishSettingsPath);

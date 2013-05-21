@@ -134,13 +134,17 @@
   </data>
   <data name="BlobUrl" xml:space="preserve">
     <value />
-    <comment>A blob Url for a publish settgins file and a local vhd</comment>
+    <comment>A blob Url for a publish settings file and a local vhd</comment>
   </data>
   <data name="Vhd" xml:space="preserve">
     <value />
   </data>
   <data name="TestSettings" xml:space="preserve">
     <value>UseDefaults</value>
-    <comment>Use UseDefaultsAndOverride for overriding few variables and UseCustom for your own personal test settings</comment>
+    <comment>UseDefaults for using the default settings, UseDefaultsandOverride for overriding few variables and UseCustom for your own personal test settings</comment>
+  </data>
+  <data name="DefaultStorageAccountName" xml:space="preserve">
+    <value>rtstore</value>
+    <comment>Default StorageAccount Name for the subscription</comment>
   </data>
 </root>

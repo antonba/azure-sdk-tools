@@ -29,6 +29,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
     using System.ServiceModel.Channels;
     using System.Text;
     using System.Xml;
+    using System.Xml.Linq;
     using System.Xml.Serialization;
     using Microsoft.WindowsAzure.Management.Utilities.CloudService;
     using Microsoft.WindowsAzure.Management.Utilities.Common.XmlSchema.ServiceConfigurationSchema;
@@ -142,6 +143,19 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
             T obj = (T)xmlSerializer.Deserialize(stream);
             stream.Close();
+
+            return obj;
+        }
+
+        public static T DeserializeXmlString<T>(string contents)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+            T obj;
+
+            using (StringReader reader = new StringReader(contents))
+            {
+                obj = (T)xmlSerializer.Deserialize(reader);
+            }
 
             return obj;
         }
@@ -261,17 +275,6 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
         }
 
         /// <summary>
-        /// Gets the value of publish settings url from environment if set, otherwise returns the default value.
-        /// </summary>
-        public static string PublishSettingsUrl
-        {
-            get
-            {
-                return TryGetEnvironmentVariable(Resources.PublishSettingsUrlEnv, Resources.PublishSettingsUrl);
-            }
-        }
-
-        /// <summary>
         /// Gets the value of azure portal url from environment if set, otherwise returns the default value.
         /// </summary>
         public static string AzurePortalUrl
@@ -280,27 +283,6 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
             {
                 return TryGetEnvironmentVariable(Resources.AzurePortalUrlEnv, Resources.AzurePortalUrl);
             }
-        }
-
-        /// <summary>
-        /// Gets the value of azure host name suffix from environment if set, otherwise returns the default value.
-        /// </summary>
-        public static string AzureWebsiteHostNameSuffix
-        {
-            get
-            {
-                return TryGetEnvironmentVariable(Resources.AzureHostNameSuffixEnv, Resources.AzureHostNameSuffix);
-            }
-        }
-
-        /// <summary>
-        /// Gets the value of publish settings url with realm from environment if set, otherwise returns the default value.
-        /// </summary>
-        /// <param name="realm">Realm phrase</param>
-        /// <returns>The publish settings url with realm phrase</returns>
-        public static string PublishSettingsUrlWithRealm(string realm)
-        {
-            return PublishSettingsUrl + "&whr=" + realm;
         }
 
         /// <summary>
@@ -894,8 +876,26 @@ namespace Microsoft.WindowsAzure.Management.Utilities.Common
             string endpoint = builder.Uri.GetComponents(
                 UriComponents.AbsoluteUri & ~UriComponents.Port,
                 UriFormat.UriEscaped);
-            
+
             return new Uri(endpoint);
+        }
+
+        /// <summary>
+        /// Formats the given XML into indented way.
+        /// </summary>
+        /// <param name="xml">The input xml string</param>
+        /// <returns>The formatted xml string</returns>
+        public static string FormatXml(string xml)
+        {
+            try
+            {
+                XDocument doc = XDocument.Parse(xml);
+                return doc.ToString();
+            }
+            catch (Exception)
+            {
+                return xml;
+            }
         }
     }
 }

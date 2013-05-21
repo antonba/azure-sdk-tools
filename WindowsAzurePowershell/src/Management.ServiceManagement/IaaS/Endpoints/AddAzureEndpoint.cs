@@ -20,8 +20,9 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
     using System.Linq;
     using System.Management.Automation;
     using IaaS;
-    using Microsoft.WindowsAzure.ServiceManagement;
+    using WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
 
     [Cmdlet(VerbsCommon.Add, "AzureEndpoint", DefaultParameterSetName = "NoLB"), OutputType(typeof(IPersistentVM))]
     public class AddAzureEndpoint : VirtualMachineConfigurationCmdletBase 
@@ -130,7 +131,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
             {
                 ThrowTerminatingError(
                     new ErrorRecord(
-                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "An endpoint named '{0}' has already been defined for this VM. Specify a different endpoint name or use Set-Endpoint to change the configuration settings of the existing endpoint.", this.Name)),
+                            new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.EndpointAlreadyDefinedForVM, this.Name)),
                             string.Empty,
                             ErrorCategory.InvalidData,
                             null));
@@ -228,7 +229,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
                 {
                     if (!string.IsNullOrEmpty(ProbePath))
                     {
-                        throw new ArgumentException("ProbePath not valid with tcp");
+                        throw new ArgumentException(Resources.ProbePathIsNotValidWithTcp);
                     }
                 }
 
@@ -236,26 +237,26 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS.Endpoints
                 {
                     if (string.IsNullOrEmpty(ProbePath))
                     {
-                        throw new ArgumentException("ProbePath is required for http");
+                        throw new ArgumentException(Resources.ProbePathIsRequiredForHttp);
                     }
                 }
             }
 
             if (LocalPort < 1 || LocalPort > 65535)
             {
-                throw new ArgumentException("Ports must be in the range of 1 - 65535");
+                throw new ArgumentException(Resources.PortSpecifiedIsNotInRange);
             }
 
             if (PublicPort != null && (PublicPort < 1 || PublicPort > 65535))
             {
-                throw new ArgumentException("Ports must be in the range of 1 - 65535");
+                throw new ArgumentException(Resources.PortSpecifiedIsNotInRange);
             }
 
             if (ParameterSetName == "LoadBalancedProbe")
             {
                 if (ProbePort < 1 || ProbePort > 65535)
                 {
-                    throw new ArgumentException("Ports must be in the range of 1 - 65535");
+                    throw new ArgumentException(Resources.PortSpecifiedIsNotInRange);
                 }
             }
         }       

@@ -79,6 +79,15 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Test.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to rtstore.
+        /// </summary>
+        internal static string DefaultStorageAccountName {
+            get {
+                return ResourceManager.GetString("DefaultStorageAccountName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string DefaultSubscriptionName {

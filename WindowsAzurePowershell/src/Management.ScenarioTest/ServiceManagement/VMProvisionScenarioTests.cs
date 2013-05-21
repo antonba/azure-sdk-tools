@@ -47,7 +47,7 @@ namespace Microsoft.WindowsAzure.Management.ScenarioTest.ServiceManagemenet
             ServiceManagementCmdletTestHelper vmPowershellCmdlets = new ServiceManagementCmdletTestHelper();
             
             string imageName = vmPowershellCmdlets.GetAzureVMImageName(new[] { "Windows", "testvmimage" }, false);
-            string locationName = vmPowershellCmdlets.GetAzureLocationName(new[] { Resource.Location }, false);
+            string locationName = vmPowershellCmdlets.GetAzureLocationName(new[] { Resource.Location });
 
             string newAzureQuickVMName = Utilities.GetUniqueShortName("PSTestVM");
             string newAzureQuickVMSvcName = Utilities.GetUniqueShortName("PSTestService");

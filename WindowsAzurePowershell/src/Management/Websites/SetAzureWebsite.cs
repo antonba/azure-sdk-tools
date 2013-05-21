@@ -34,6 +34,8 @@ namespace Microsoft.WindowsAzure.Management.Websites
     [Cmdlet(VerbsCommon.Set, "AzureWebsite"), OutputType(typeof(bool))]
     public class SetAzureWebsiteCommand : WebsiteContextBaseCmdlet
     {
+        public IWebsitesClient WebsitesClient { get; set; }
+
         [Parameter(Mandatory = false, ValueFromPipelineByPropertyName = true, HelpMessage = "Number of workers.")]
         [ValidateNotNullOrEmpty]
         public int? NumberOfWorkers { get; set; }
@@ -105,6 +107,8 @@ namespace Microsoft.WindowsAzure.Management.Websites
         public override void ExecuteCmdlet()
         {
             base.ExecuteCmdlet();
+            WebsitesClient = WebsitesClient ?? new WebsitesClient(CurrentSubscription, WriteDebug);
+            string suffix = WebsitesClient.GetWebsiteDnsSuffix();
 
             Site website = null;
             SiteConfig websiteConfig = null;
@@ -205,12 +209,12 @@ namespace Microsoft.WindowsAzure.Management.Websites
             Site websiteUpdate = new Site
             {
                 Name = Name,
-                HostNames = new[] { Name + General.AzureWebsiteHostNameSuffix }
+                HostNames = new[] { string.Format("{0}.{1}", Name, suffix) }
             };
             if (HostNames != null)
             {
                 siteChanges = true;
-                List<string> newHostNames = new List<string> { Name + General.AzureWebsiteHostNameSuffix };
+                List<string> newHostNames = new List<string> { string.Format("{0}.{1}", Name, suffix) };
                 newHostNames.AddRange(HostNames);
                 websiteUpdate.HostNames = newHostNames.ToArray();
             }

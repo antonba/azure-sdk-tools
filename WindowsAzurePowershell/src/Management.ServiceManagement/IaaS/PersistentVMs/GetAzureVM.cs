@@ -12,11 +12,10 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-using System.Net;
-
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
 {
     using System;
+    using System.Net;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -24,6 +23,8 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
     using System.ServiceModel;
     using Microsoft.WindowsAzure.ServiceManagement;
     using Model;
+    using Properties;
+
 
     [Cmdlet(VerbsCommon.Get, "AzureVM"), OutputType(typeof(List<PersistentVMRoleContext>), typeof(PersistentVMRoleListContext))]
     public class GetAzureVMCommand : IaaSDeploymentManagementCmdletBase
@@ -129,7 +130,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
                 }
                 catch (Exception)
                 {
-                    WriteObject(string.Format("Could not read properties for virtual machine: {0}. It may still be provisioning.", lastVM));
+                    WriteObject(string.Format(Resources.VMPropertiesCanNotBeRead, lastVM));
                 }
             }
 
@@ -158,7 +159,7 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.IaaS
                         {
                             try
                             {
-                                var deployment = this.RetryCall(s => this.Channel.GetDeploymentBySlot(s, service.ServiceName, "Production"));
+                                var deployment = this.RetryCall(s => this.Channel.GetDeploymentBySlot(s, service.ServiceName, DeploymentSlotType.Production));
                                 foreach (Role role in deployment.RoleList)
                                 {
                                     if (role.RoleType == "PersistentVMRole")
