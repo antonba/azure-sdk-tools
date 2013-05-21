@@ -494,7 +494,7 @@ namespace Microsoft.WindowsAzure.Management.Utilities.CloudService
             }
         }
 
-        private class PHPCloudRuntime : CloudRuntime
+        internal class PHPCloudRuntime : CloudRuntime
         {
             protected override void Configure(Dictionary<string, string> environment)
             {
@@ -502,7 +502,6 @@ namespace Microsoft.WindowsAzure.Management.Utilities.CloudService
 
                 if (string.IsNullOrEmpty(this.Version))
                 {
-                    //string version = Resources.PHPDefaultRuntimeVersion;
                     string version = GetInstalledRuntimeVersion();
                     environment.TryGetValue(Resources.RuntimeVersionPrimaryKey, out version);
                     this.Version = version;

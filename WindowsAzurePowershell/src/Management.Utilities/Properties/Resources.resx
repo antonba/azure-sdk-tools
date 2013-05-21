@@ -1296,4 +1296,7 @@ Please follow these steps in the portal:
   <data name="AccessDeniedExceptionMessage" xml:space="preserve">
     <value>The remote server returned an error: (401) Unauthorized.</value>
   </data>
+  <data name="RuntimeVersionInstalled" xml:space="preserve">
+    <value>5.3.24</value>
+  </data>
 </root>
